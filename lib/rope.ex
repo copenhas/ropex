@@ -34,6 +34,14 @@ defmodule Rope do
               value: str
   end
 
+  def concat(rope, nil) do
+    ropeify rope
+  end
+
+  def concat(nil, rope) do
+    ropeify rope
+  end
+
   def concat(rope1, rope2) do
     rope1 = ropeify(rope1)
     rope2 = ropeify(rope2)
@@ -43,22 +51,39 @@ defmodule Rope do
               length: rope1.length + rope2.length
   end
 
+  def slice(nil, _start, _len) do
+    nil
+  end
+
   def slice(rope = RLeaf[], start, len) do
     String.slice(rope.value, start, len)
   end
 
-  def slice(rope = RNode[length: rlen], start, len) 
+  def slice(RNode[length: rlen], start, _len) 
   when start > rlen do
     nil
   end
 
-  def slice(rope = RNode[length: rlen], start, len) 
+  def slice(RNode[length: rlen], start, _len) 
   when start == rlen do
     ""
   end
 
   def slice(rope, start, len) do
-    
+    RNode[left: left,
+          right: right] = rope
+
+    {startRight, lenRight} =
+      if start < left.length do
+        {0, len - (left.length - start)}
+      else
+        {start - left.length, len}
+      end
+
+    leftSub = slice(left, start, len)
+    rightSub = slice(right, startRight, lenRight)
+
+    concat(leftSub, rightSub)
   end
 
   def to_string(rope) do
@@ -71,6 +96,7 @@ defmodule Rope do
       RLeaf[] -> rope
       <<_ :: binary>> ->
         Rope.new(rope)
+      nil -> nil
     end
   end
 end

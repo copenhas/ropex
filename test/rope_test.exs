@@ -3,6 +3,7 @@ Code.require_file "test_helper.exs", __DIR__
 defmodule RopeTest do
   use ExUnit.Case
 
+  @simple "hello world"
   @text "Have you any idea how much damage that bulldozer would suffer if I just let it roll straight over you?"
   @longtext """
   The Hitchhiker’s Guide to the Galaxy has a few things to say on the subject of towels.
@@ -20,15 +21,15 @@ defmodule RopeTest do
   """
 
   test "can create a basic rope" do
-    rope = Rope.new("test")
-    is_equal rope, "test"
+    rope = Rope.new(@simple)
+    is_equal rope, @simple
 
     rope = Rope.new(@text)
     is_equal rope, @text
   end
 
   test "can concat two single node ropes together" do
-    rope = Rope.concat(Rope.new("hello"), Rope.new(" world"))
+    rope = build_rope @simple
     is_equal rope, "hello world"
   end
 
@@ -58,12 +59,20 @@ defmodule RopeTest do
     is_equal rope, @longtext
   end
 
-  test "slice with a start greater then the rope length returns the same as String.slice/3" do
-    rope = Rope.new "test"
-    assert Rope.slice(rope, 5, 10) == String.slice("test", 5, 10)
+  test "concat handles nils" do
+    rope = Rope.concat(nil, "test")
+    is_equal rope, "test"
 
-    rope = Rope.concat "hello", " world"
-    assert Rope.slice(rope, 12, 10) == String.slice("hello world", 12, 10)
+    rope = Rope.concat("test", nil)
+    is_equal rope, "test"
+  end
+
+  test "slice with a start greater then the rope length returns the same as String.slice/3" do
+    rope = Rope.new @simple
+    assert Rope.slice(rope, 50, 10) == String.slice(@simple, 50, 10)
+
+    rope = build_rope @simple
+    assert Rope.slice(rope, 120, 10) == String.slice(@simple, 120, 10)
   end
 
   test "slice with start equal to the rope returns the same as String.slice/3" do
@@ -71,7 +80,8 @@ defmodule RopeTest do
     assert Rope.slice(rope, 4, 10) == String.slice("test", 4, 10)
 
     rope = Rope.concat "hello", " world"
-    assert Rope.slice(rope, 11, 10) == String.slice("hello world", 11, 10)
+    length = String.length @simple
+    assert Rope.slice(rope, length, 10) == String.slice(@simple, length, 10)
   end
 
   test "slice works on single node ropes" do
@@ -80,13 +90,13 @@ defmodule RopeTest do
   end
 
   test "slice works on multi-node ropes" do
-    rope = Rope.concat "hello", " world"
-    assert Rope.slice(rope, 3, 5) == "lo wo"
+    rope = build_rope @simple
+    is_equal Rope.slice(rope, 3, 5), String.slice(@simple, 3, 5)
   end
 
   test "can get slice from middle of text" do
     rope = build_rope @longtext
-    is_equal Rope.slice(rope, 231, 15), "wrap it around"
+    is_equal Rope.slice(rope, 231, 15), String.slice(@longtext, 231, 15)
   end
 
   defp build_rope(text) do
