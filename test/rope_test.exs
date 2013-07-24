@@ -77,16 +77,16 @@ defmodule RopeTest do
 
   test "slice with start equal to the rope returns the same as String.slice/3" do
     rope = Rope.new "test"
-    assert Rope.slice(rope, 4, 10) == String.slice("test", 4, 10)
+    is_equal Rope.slice(rope, 4, 10), String.slice("test", 4, 10)
 
     rope = Rope.concat "hello", " world"
     length = String.length @simple
-    assert Rope.slice(rope, length, 10) == String.slice(@simple, length, 10)
+    is_equal Rope.slice(rope, length, 10), String.slice(@simple, length, 10)
   end
 
   test "slice works on single node ropes" do
     rope = Rope.new "test"
-    assert Rope.slice(rope, 2, 1) == "s"
+    is_equal Rope.slice(rope, 2, 1), "s"
   end
 
   test "slice works on multi-node ropes" do
@@ -97,6 +97,17 @@ defmodule RopeTest do
   test "can get slice from middle of text" do
     rope = build_rope @longtext
     is_equal Rope.slice(rope, 231, 15), String.slice(@longtext, 231, 15)
+  end
+
+  test "get the length of a rope" do
+    rope = build_rope @longtext
+    assert Rope.length(rope) == String.length(@longtext)
+
+    rope = build_rope @text
+    assert Rope.length(rope) == String.length(@text)
+
+    rope = build_rope ""
+    assert Rope.length(rope) == String.length("")
   end
 
   defp build_rope(text) do
@@ -115,7 +126,7 @@ defmodule RopeTest do
   end
 
   defp rope_value(rope) do
-    Rope.to_string rope
+    Kernel.inspect rope
   end
 
 end

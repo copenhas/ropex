@@ -1,37 +1,52 @@
 defmodule Rope do
+  @moduledoc """
+  A rope is a tree structure for representing strings.
 
-  defrecord RNode, left: nil,
-                    right: nil,
-                    length: nil
+  ## Ropes
+  A rope provides a scalable way to represent and manipulation strings
+  from small to huge. They provide the following characteristics:
 
-  defrecord RLeaf, length: nil,
-                    value: nil
+  1. Immutable (kind of has to be anyway for BEAM)
+  2. Common operations are effecient
+  3. Common oeprations scale
+  4. Should be able to handle alternate representations (ex: IO stream) - we'll see
 
-  defimpl Inspect, for: RNode do
-    import Inspect.Algebra
+  ## Links
+  - http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.14.9450&rep=rep1&type=pdf
+  - https://en.wikipedia.org/wiki/Rope_\(data_structure\)
+  """
 
-    def inspect(RNode[left: nil, right: right], _opts) do
-      Kernel.inspect(right)
-    end
+  defrecordp :rnode, Rope,
+    length: 0 :: non_neg_integer,
+    left: nil :: Rope,
+    right: nil :: Rope
 
-    def inspect(RNode[left: left, right: nil], _opts) do
-      Kernel.inspect(left)
-    end
+  defrecordp :rleaf, Rope,
+    length: 0 :: non_neg_integer,
+    value: nil :: binary
 
-    def inspect(rope, _opts) do
-      concat Kernel.inspect(rope.left), Kernel.inspect(rope.right)
-    end
-  end
 
-  defimpl Inspect, for: RLeaf do
-    def inspect(rope, _opts) do
-      rope.value
-    end
-  end
+  # copied the type defs from the String module
+  @type t :: binary
+  @type codepoint :: t
+  @type grapheme :: t
 
+
+  @doc """
+  Creates a new rope with the string provided
+  """
+  @spec new(t) :: Rope.t
   def new(str) do
-    RLeaf.new length: String.length(str),
-              value: str
+    rleaf(length: String.length(str), value: str)
+  end
+
+
+  @doc """
+  Concatenates two ropes together producing a new single rope.
+  """
+  @spec concat(Rope.t | nil, Rope.t | nil) :: Rope.t | nil
+  def concat(nil, nil) do
+    nil
   end
 
   def concat(rope, nil) do
@@ -43,35 +58,43 @@ defmodule Rope do
   end
 
   def concat(rope1, rope2) do
-    rope1 = ropeify(rope1)
-    rope2 = ropeify(rope2)
+    rope1 = ropeify rope1
+    rope2 = ropeify rope2
 
-    RNode.new left: rope1,
-              right: rope2,
-              length: rope1.length + rope2.length
+    rnode(left: rope1,
+          right: rope2,
+          length: rope1.length + rope2.length)
   end
 
+
+  @doc """
+  Returns a sub-rope starting at the offset given by the first, and a length given by 
+  the second. If the offset is greater than string length, than it returns nil.
+
+  Similar to String.slice/3
+  """
+  @spec slice(Rope.t | nil, integer, integer) :: Rope.t | nil
   def slice(nil, _start, _len) do
     nil
   end
 
-  def slice(rope = RLeaf[], start, len) do
-    String.slice(rope.value, start, len)
+  def slice(rleaf(value: value), start, len) do
+    ropeify String.slice(value, start, len)
   end
 
-  def slice(RNode[length: rlen], start, _len) 
+  def slice(rnode(length: rlen), start, _len) 
   when start > rlen do
     nil
   end
 
-  def slice(RNode[length: rlen], start, _len) 
+  def slice(rnode(length: rlen), start, _len) 
   when start == rlen do
-    ""
+    ropeify ""
   end
 
   def slice(rope, start, len) do
-    RNode[left: left,
-          right: right] = rope
+    rnode(left: left,
+          right: right) = rope
 
     {startRight, lenRight} =
       if start < left.length do
@@ -86,17 +109,57 @@ defmodule Rope do
     concat(leftSub, rightSub)
   end
 
-  def to_string(rope) do
-    Kernel.inspect rope
+
+  @doc """
+  Retrieve the length in ut8 characters in the rope.
+  """
+  @spec length(Rope.t | t | nil) :: integer
+  def length(rleaf(length: len)) do
+    len
   end
+
+  def length(rnode(length: len)) do
+    len
+  end
+
+  def length(rope) do
+    String.length rope
+  end
+
 
   defp ropeify(rope) do
     case rope do
-      RNode[] -> rope
-      RLeaf[] -> rope
+      rnode() -> rope
+      rleaf() -> rope
       <<_ :: binary>> ->
         Rope.new(rope)
       nil -> nil
     end
   end
+
+
+  defimpl Inspect, for: Rope do
+    def inspect(rope, _opts) do
+      Rope.to_algebra_doc(rope)
+    end
+  end
+
+
+  @doc false
+  def to_algebra_doc(rnode(left: nil, right: right)) do
+    to_algebra_doc(right)
+  end
+
+  def to_algebra_doc(rnode(left: left, right: nil)) do
+    to_algebra_doc(left)
+  end
+
+  def to_algebra_doc(rnode(left: left, right: right)) do
+    Inspect.Algebra.concat to_algebra_doc(left), to_algebra_doc(right)
+  end
+
+  def to_algebra_doc(rleaf(value: value)) do
+    value
+  end
+
 end
