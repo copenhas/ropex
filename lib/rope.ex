@@ -171,14 +171,6 @@ defmodule Rope do
     leaves
   end
 
-  defp rebuild(buckets) do
-    [h | tail] =
-      Enum.filter(buckets, fn(b) -> elem(b, 1) != nil end)
-      |> Enum.map(fn(b) -> elem(b, 1) end)
-
-    Enum.reduce(tail, h, fn(r1, r2) -> Rope.concat(r1, r2) end)
-  end
-
 
   @doc """
   Retrieve the length in ut8 characters in the rope.
