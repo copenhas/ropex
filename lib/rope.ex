@@ -18,11 +18,13 @@ defmodule Rope do
 
   defrecordp :rnode, Rope,
     length: 0 :: non_neg_integer,
+    depth: 1 :: non_neg_integer,
     left: nil :: Rope,
     right: nil :: Rope
 
   defrecordp :rleaf, Rope,
     length: 0 :: non_neg_integer,
+    depth: 0 :: non_neg_integer,
     value: nil :: binary
 
 
@@ -31,12 +33,18 @@ defmodule Rope do
   @type codepoint :: t
   @type grapheme :: t
 
+  @type rope :: Rope.t | nil
+
 
   @doc """
   Creates a new rope with the string provided
   """
-  @spec new(t) :: Rope.t
-  def new(str) do
+  @spec new(t | nil) :: rope
+  def new(nil) do
+    nil
+  end
+
+  def new(str) when is_binary(str) do
     rleaf(length: String.length(str), value: str)
   end
 
@@ -44,7 +52,7 @@ defmodule Rope do
   @doc """
   Concatenates two ropes together producing a new single rope.
   """
-  @spec concat(Rope.t | nil, Rope.t | nil) :: Rope.t | nil
+  @spec concat(rope | t, rope | t) :: rope
   def concat(nil, nil) do
     nil
   end
@@ -61,7 +69,10 @@ defmodule Rope do
     rope1 = ropeify rope1
     rope2 = ropeify rope2
 
-    rnode(left: rope1,
+    depth = Enum.max([rope1.depth, rope2.depth]) + 1
+
+    rnode(depth: depth,
+          left: rope1,
           right: rope2,
           length: rope1.length + rope2.length)
   end
@@ -73,7 +84,7 @@ defmodule Rope do
 
   Similar to String.slice/3
   """
-  @spec slice(Rope.t | nil, integer, integer) :: Rope.t | nil
+  @spec slice(rope, integer, integer) :: rope
   def slice(nil, _start, _len) do
     nil
   end
@@ -113,17 +124,26 @@ defmodule Rope do
   @doc """
   Retrieve the length in ut8 characters in the rope.
   """
-  @spec length(Rope.t | t | nil) :: integer
-  def length(rleaf(length: len)) do
-    len
-  end
-
-  def length(rnode(length: len)) do
-    len
-  end
-
+  @spec length(rope) :: non_neg_integer
   def length(rope) do
-    String.length rope
+    case rope do
+      nil -> 0
+      rleaf(length: len) -> len
+      rnode(length: len) -> len
+    end
+  end
+
+
+  @doc """
+  Returns the depth of the rope tree.
+  """
+  @spec depth(rope) :: non_neg_integer
+  def depth(rope) do
+    case rope do
+      nil -> 0
+      rnode(depth: depth) -> depth
+      rleaf(depth: depth) -> depth
+    end
   end
 
 

@@ -110,6 +110,15 @@ defmodule RopeTest do
     assert Rope.length(rope) == String.length("")
   end
 
+  test "get the depth of a rope" do
+    rope = build_rope @simple
+    assert Rope.depth(rope) == 1
+
+    rope = build_rope @longtext
+    assert Rope.depth(rope) == 185
+  end
+
+
   defp build_rope(text) do
     words = text
       |> String.split(" ")
@@ -118,7 +127,7 @@ defmodule RopeTest do
 
     words
       |> Enum.drop(1)
-      |> Enum.reduce(first, fn (word, rope) -> Rope.concat(rope, " " <> word) end)
+      |> Enum.reduce(Rope.new(first), fn (word, rope) -> Rope.concat(rope, " " <> word) end)
   end
 
   defp is_equal(rope, str) do
