@@ -122,6 +122,65 @@ defmodule Rope do
 
 
   @doc """
+  Rebalance the rope explicitly to help keep insert, remove, etc
+  efficient.
+  """
+  @spec rebalance(rope) :: rope
+  def rebalance(nil) do
+    nil
+  end
+
+  def rebalance(rope) when is_record(rope, Rope) do
+    leaves = flatten([], rope)
+    rebuild_rope([], leaves)
+  end
+
+  defp rebuild_rope(subropes, [leaf1, leaf2 | leaves]) do
+    subrope = Rope.concat(leaf1, leaf2)
+    rebuild_rope([subrope | subropes], leaves)
+  end
+
+  defp rebuild_rope(subropes, [leaf1]) do
+    rebuild_rope([leaf1 | subropes], [])
+  end
+
+  defp rebuild_rope([rope], []) do
+    rope
+  end
+
+  defp rebuild_rope(subropes, []) do
+    subropes = Enum.reverse subropes
+    rebuild_rope([], subropes)
+  end
+
+  defp flatten(leaves, rnode(right: right, left: left)) do
+    leaves 
+      |> flatten(right) 
+      |> flatten(left)
+  end
+
+  defp flatten(leaves, rleaf(length: len) = rope) do
+    case len do
+      0 -> leaves
+      n when n > 0 -> 
+        [ rope | leaves ]
+    end
+  end
+
+  defp flatten(leaves, nil) do
+    leaves
+  end
+
+  defp rebuild(buckets) do
+    [h | tail] =
+      Enum.filter(buckets, fn(b) -> elem(b, 1) != nil end)
+      |> Enum.map(fn(b) -> elem(b, 1) end)
+
+    Enum.reduce(tail, h, fn(r1, r2) -> Rope.concat(r1, r2) end)
+  end
+
+
+  @doc """
   Retrieve the length in ut8 characters in the rope.
   """
   @spec length(rope) :: non_neg_integer

@@ -111,13 +111,21 @@ defmodule RopeTest do
   end
 
   test "get the depth of a rope" do
-    rope = build_rope @simple
-    assert Rope.depth(rope) == 1
-
     rope = build_rope @longtext
     assert Rope.depth(rope) == 185
+
+    rope = build_rope @simple
+    assert Rope.depth(rope) == 1
   end
 
+  test "things should rebalance" do
+    rope = build_rope @longtext
+    assert Rope.depth(rope) == 185
+
+    rope = Rope.rebalance rope
+    is_equal rope, @longtext
+    assert Rope.depth(rope) == 8
+  end
 
   defp build_rope(text) do
     words = text
