@@ -99,6 +99,12 @@ defmodule RopeTest do
     is_equal Rope.slice(rope, 231, 15), String.slice(@longtext, 231, 15)
   end
 
+  test "rebalancing shouldn't effect a slice" do
+    rope = build_rope @longtext
+    rope = Rope.rebalance(rope)
+    is_equal Rope.slice(rope, 231, 15), String.slice(@longtext, 231, 15)
+  end
+
   test "get the length of a rope" do
     rope = build_rope @longtext
     assert Rope.length(rope) == String.length(@longtext)
@@ -127,6 +133,27 @@ defmodule RopeTest do
     assert Rope.depth(rope) == 8
   end
 
+  test "rebalancing a balanced tree should return a rope of equal value" do
+    rope = build_rope @longtext
+    rope1= Rope.rebalance rope
+    rope2 = Rope.rebalance rope1
+
+    is_equal rope1, rope2
+    assert Rope.depth(rope1) == Rope.depth(rope2)
+  end
+
+  test "rebalancing can be called explicitly anytime" do
+    rope = @longtext
+      |> build_rope
+      |> Rope.rebalance
+
+    rope = Rope.concat(rope, build_rope(@longtext))
+    ropebalanced = Rope.rebalance(rope)
+
+    is_equal rope, ropebalanced
+  end
+
+
   defp build_rope(text) do
     words = text
       |> String.split(" ")
@@ -138,8 +165,16 @@ defmodule RopeTest do
       |> Enum.reduce(Rope.new(first), fn (word, rope) -> Rope.concat(rope, " " <> word) end)
   end
 
-  defp is_equal(rope, str) do
+  defp is_equal(rope, str)
+  when is_record(rope, Rope) and is_binary(str)  do
+    assert Rope.length(rope) == String.length(str)
     assert rope_value(rope) == str
+  end
+
+  defp is_equal(rope1, rope2)
+  when is_record(rope1, Rope) and is_record(rope2, Rope)  do
+    assert Rope.length(rope1) == Rope.length(rope2)
+    assert rope_value(rope1) == rope_value(rope2)
   end
 
   defp rope_value(rope) do

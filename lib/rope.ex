@@ -155,7 +155,7 @@ defmodule Rope do
 
   defp flatten(leaves, rnode(right: right, left: left)) do
     leaves 
-      |> flatten(right) 
+      |> flatten(right)
       |> flatten(left)
   end
 
