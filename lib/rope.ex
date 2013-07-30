@@ -199,6 +199,33 @@ defmodule Rope do
     do_find_all(rope, term, []) |> Enum.reverse
   end
 
+  @doc """
+  Replaces the first match with the replacement text and returns
+  the new rope. If not found then the existing rope is returned.
+  By default, it replaces all entries, except if the global option 
+  is set to false.
+  """
+  @spec replace(rope, str, str, list) :: rope
+  def replace(rope, pattern, replacement, opts // []) do
+    global = Keyword.get(opts, :global, true)
+
+    if global do
+      do_replace_all(rope, pattern, replacement)
+    else
+      do_replace(rope, pattern, replacement)
+    end
+  end
+
+  @doc """
+  Converts the entire rope to a single binary.
+  """
+  @spec to_binary(rope) :: binary
+  def to_binary(rope) do
+    flatten([], rope)
+    |> Stream.map(fn(rleaf(value: value)) -> value end)
+    |> Enum.join
+  end
+
 
   defp ropeify(rope) do
     case rope do
@@ -226,6 +253,36 @@ defmodule Rope do
         do_find_all(leftOvers, term, [match + lastMatch | matches])
     end
   end
+
+  def do_replace(rope, pattern, replacement) do
+    termLen = String.length(pattern)
+    index = find(rope, pattern)
+
+    leftRope = slice(rope, 0, index)
+    rightRope = slice(rope, index + termLen, rope.length - index - termLen)
+
+    leftRope |> concat(replacement) |> concat(rightRope)
+  end
+
+  def do_replace_all(rope, pattern, replacement) do
+    termLen = String.length(pattern)
+    indexes = find_all(rope, pattern)
+
+    {offset, subropes} = Enum.reduce(indexes, {0, []}, fn(index, {offset, ropes}) ->
+      len = index - offset
+      if offset != 0, do: len = len + termLen
+
+      leftRope = slice(rope, offset, len)
+      {index + termLen, [replacement | [leftRope | ropes]]}
+    end)
+
+    leftRope = slice(rope, offset + termLen, rope.length)
+    subropes = [leftRope | subropes]
+
+    subropes = Enum.reverse subropes
+    rebuild_rope [], subropes
+  end
+
 
   defp do_reduce_while(enumerable, acc, whiler, reducer) do
     try do
@@ -275,6 +332,13 @@ defmodule Rope do
 
   defp flatten(leaves, nil) do
     leaves
+  end
+
+
+  defimpl Binary.Chars, for: Rope do
+    def to_binary(rope) do
+      Rope.to_binary(rope)
+    end
   end
 
 

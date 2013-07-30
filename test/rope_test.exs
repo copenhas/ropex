@@ -190,6 +190,16 @@ defmodule RopeTest do
     assert indexes == []
   end
 
+  test "replace works like String.replace/4 but with ropes" do
+    orig = @text |> build_rope |> Rope.rebalance
+
+    rope = Rope.replace(orig, "you", "me", global: false)
+    is_equal rope, String.replace(@text, "you", "me", global: false)
+
+    rope = Rope.replace(orig, "you", "me")
+    is_equal rope, String.replace(@text, "you", "me")
+  end
+
 
   defp build_rope(text) do
     words = text
