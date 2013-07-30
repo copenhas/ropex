@@ -170,6 +170,26 @@ defmodule RopeTest do
     assert Rope.find(rope, "unknown") == -1
   end
 
+  test "find returns -1 if the rope is nil" do
+    assert Rope.find(nil, "anything") == -1
+  end
+
+  test "find_all returns an list of matches" do
+    rope = @longtext |> build_rope |> Rope.rebalance
+    indexes = Rope.find_all(rope, "towel")
+    assert indexes == [79, 84, 867]
+
+    rope = @text |> build_rope |> Rope.rebalance
+    indexes = Rope.find_all(rope, "you")
+    assert indexes == [5,95]
+  end
+
+  test "find_all returns an empty list if there are no matches" do
+    rope = @text |> build_rope |> Rope.rebalance
+    indexes = Rope.find_all(rope, "towels")
+    assert indexes == []
+  end
+
 
   defp build_rope(text) do
     words = text

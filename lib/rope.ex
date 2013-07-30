@@ -35,7 +35,6 @@ defmodule Rope do
   @type grapheme :: str
 
 
-
   @doc """
   Creates a new rope with the string provided
   """
@@ -47,7 +46,6 @@ defmodule Rope do
   def new(str) when is_binary(str) do
     rleaf(length: String.length(str), value: str)
   end
-
 
   @doc """
   Concatenates two ropes together producing a new single rope.
@@ -76,7 +74,6 @@ defmodule Rope do
           right: rope2,
           length: rope1.length + rope2.length)
   end
-
 
   @doc """
   Returns a sub-rope starting at the offset given by the first, and a length given by 
@@ -123,17 +120,6 @@ defmodule Rope do
 
     concat(leftSub, rightSub)
   end
-
-  defp ropeify(rope) do
-    case rope do
-      rnode() -> rope
-      rleaf() -> rope
-      <<_ :: binary>> ->
-        Rope.new(rope)
-      nil -> nil
-    end
-  end
-
 
   @doc """
   Rebalance the rope explicitly to help keep insert, remove, etc
@@ -203,6 +189,44 @@ defmodule Rope do
     end
   end
 
+  @doc """
+  Find all matches in the rope returning a list of indexes,
+  or an empty list if no matches were found. The list is in order
+  from first to last match.
+  """
+  @spec find_all(rope, str) :: list(non_neg_integer)
+  def find_all(rope, term) do
+    do_find_all(rope, term, []) |> Enum.reverse
+  end
+
+
+  defp ropeify(rope) do
+    case rope do
+      rnode() -> rope
+      rleaf() -> rope
+      <<_ :: binary>> ->
+        Rope.new(rope)
+      nil -> nil
+    end
+  end
+
+  defp do_find_all(rope, term, matches) do
+    termLen = String.length term
+
+    lastMatch = case matches do
+      [] -> 0
+      [last | _tail] -> last
+    end
+
+    case find(rope, term) do
+      -1 -> matches
+      match when match >= 0 ->
+        offset = match + termLen
+        leftOvers = Rope.slice(rope, offset, rope.length - offset)
+        do_find_all(leftOvers, term, [match + lastMatch | matches])
+    end
+  end
+
   defp do_reduce_while(enumerable, acc, whiler, reducer) do
     try do
       Enum.reduce(enumerable, acc, fn(el, acc) ->
@@ -259,7 +283,6 @@ defmodule Rope do
       Rope.to_algebra_doc(rope)
     end
   end
-
 
   @doc false
   def to_algebra_doc(rnode(left: nil, right: right)) do

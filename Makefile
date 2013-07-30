@@ -1,6 +1,6 @@
 .PHONY: test
 
-default: ctags test dialyzer
+default: ctags test 
 
 test:
 	mix test
