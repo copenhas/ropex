@@ -153,6 +153,23 @@ defmodule RopeTest do
     is_equal rope, ropebalanced
   end
 
+  test "find returns the index the search term begins at" do
+    rope = @longtext
+      |> build_rope
+      |> Rope.rebalance
+
+    index = Rope.find(rope, "towels")
+    subrope = Rope.slice(rope, index, String.length("towels"))
+
+    is_equal subrope, "towels"
+  end
+
+  test "find returns -1 if the term could not be found" do
+    rope = @text |> build_rope |> Rope.rebalance
+
+    assert Rope.find(rope, "unknown") == -1
+  end
+
 
   defp build_rope(text) do
     words = text
@@ -175,6 +192,10 @@ defmodule RopeTest do
   when is_record(rope1, Rope) and is_record(rope2, Rope)  do
     assert Rope.length(rope1) == Rope.length(rope2)
     assert rope_value(rope1) == rope_value(rope2)
+  end
+
+  defp is_equal(thing1, thing2) do
+    assert thing1 == thing2
   end
 
   defp rope_value(rope) do

@@ -27,19 +27,19 @@ defmodule Rope do
     depth: 0 :: non_neg_integer,
     value: nil :: binary
 
+  @type rope :: Rope | nil
 
   # copied the type defs from the String module
-  @type t :: binary
-  @type codepoint :: t
-  @type grapheme :: t
+  @type str :: binary
+  @type codepoint :: str
+  @type grapheme :: str
 
-  @type rope :: Rope.t | nil
 
 
   @doc """
   Creates a new rope with the string provided
   """
-  @spec new(t | nil) :: rope
+  @spec new(str | nil) :: rope
   def new(nil) do
     nil
   end
@@ -52,7 +52,7 @@ defmodule Rope do
   @doc """
   Concatenates two ropes together producing a new single rope.
   """
-  @spec concat(rope | t, rope | t) :: rope
+  @spec concat(rope | str, rope | str) :: rope
   def concat(nil, nil) do
     nil
   end
@@ -107,6 +107,10 @@ defmodule Rope do
     rnode(left: left,
           right: right) = rope
 
+    if start < 0 do
+      start = rope.length + start
+    end
+
     {startRight, lenRight} =
       if start < left.length do
         {0, len - (left.length - start)}
@@ -118,6 +122,16 @@ defmodule Rope do
     rightSub = slice(right, startRight, lenRight)
 
     concat(leftSub, rightSub)
+  end
+
+  defp ropeify(rope) do
+    case rope do
+      rnode() -> rope
+      rleaf() -> rope
+      <<_ :: binary>> ->
+        Rope.new(rope)
+      nil -> nil
+    end
   end
 
 
@@ -133,6 +147,74 @@ defmodule Rope do
   def rebalance(rope) when is_record(rope, Rope) do
     leaves = flatten([], rope)
     rebuild_rope([], leaves)
+  end
+
+  @doc """
+  Retrieve the length in ut8 characters in the rope.
+  """
+  @spec length(rope) :: non_neg_integer
+  def length(rope) do
+    case rope do
+      nil -> 0
+      rleaf(length: len) -> len
+      rnode(length: len) -> len
+    end
+  end
+
+
+  @doc """
+  Returns the depth of the rope tree.
+  """
+  @spec depth(rope) :: non_neg_integer
+  def depth(rope) do
+    case rope do
+      nil -> 0
+      rnode(depth: depth) -> depth
+      rleaf(depth: depth) -> depth
+    end
+  end
+
+
+  @doc """
+  Returns the index of the first match or -1 if no match was found.
+  """
+  @spec find(rope, str) :: integer
+  def find(nil, _term) do
+    -1
+  end
+
+  def find(rope, term) do
+    termLen = String.length(term)
+
+    matchIndex = do_reduce_while(0..rope.length, 0,
+      fn(_index, matchIndex) ->
+        subrope = Rope.slice(rope, matchIndex, termLen)
+        Kernel.inspect(subrope) != term
+      end,
+      fn(index, _matchIndex) ->
+        index
+      end
+    )
+
+    if matchIndex == rope.length and termLen > 1 do
+      -1
+    else
+      matchIndex
+    end
+  end
+
+  defp do_reduce_while(enumerable, acc, whiler, reducer) do
+    try do
+      Enum.reduce(enumerable, acc, fn(el, acc) ->
+        if not whiler.(el, acc) do
+          throw {:reduce_while, acc}
+        else
+          reducer.(el, acc)
+        end
+      end)
+    catch
+      :throw, {:reduce_while, val} -> val
+    end
   end
 
   defp rebuild_rope(subropes, [leaf1, leaf2 | leaves]) do
@@ -169,43 +251,6 @@ defmodule Rope do
 
   defp flatten(leaves, nil) do
     leaves
-  end
-
-
-  @doc """
-  Retrieve the length in ut8 characters in the rope.
-  """
-  @spec length(rope) :: non_neg_integer
-  def length(rope) do
-    case rope do
-      nil -> 0
-      rleaf(length: len) -> len
-      rnode(length: len) -> len
-    end
-  end
-
-
-  @doc """
-  Returns the depth of the rope tree.
-  """
-  @spec depth(rope) :: non_neg_integer
-  def depth(rope) do
-    case rope do
-      nil -> 0
-      rnode(depth: depth) -> depth
-      rleaf(depth: depth) -> depth
-    end
-  end
-
-
-  defp ropeify(rope) do
-    case rope do
-      rnode() -> rope
-      rleaf() -> rope
-      <<_ :: binary>> ->
-        Rope.new(rope)
-      nil -> nil
-    end
   end
 
 
