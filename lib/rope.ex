@@ -123,7 +123,8 @@ defmodule Rope do
 
   @doc """
   Rebalance the rope explicitly to help keep insert, remove, etc
-  efficient.
+  efficient. This is a pretty greedy rebalancing and should produce
+  a fully balanced rope.
   """
   @spec rebalance(rope) :: rope
   def rebalance(nil) do
@@ -131,7 +132,10 @@ defmodule Rope do
   end
 
   def rebalance(rope) when is_record(rope, Rope) do
-    leaves = flatten([], rope)
+    leaves = rope
+      |> Enum.reduce([], fn(leaf, acc) -> [leaf | acc] end)
+      |> Enum.reverse
+
     rebuild_rope([], leaves)
   end
 
@@ -221,7 +225,7 @@ defmodule Rope do
   """
   @spec to_binary(rope) :: binary
   def to_binary(rope) do
-    flatten([], rope)
+    rope
     |> Stream.map(fn(rleaf(value: value)) -> value end)
     |> Enum.join
   end
@@ -264,7 +268,7 @@ defmodule Rope do
     leftRope |> concat(replacement) |> concat(rightRope)
   end
 
-  def do_replace_all(rope, pattern, replacement) do
+  defp do_replace_all(rope, pattern, replacement) do
     termLen = String.length(pattern)
     indexes = find_all(rope, pattern)
 
@@ -282,7 +286,6 @@ defmodule Rope do
     subropes = Enum.reverse subropes
     rebuild_rope [], subropes
   end
-
 
   defp do_reduce_while(enumerable, acc, whiler, reducer) do
     try do
@@ -316,29 +319,51 @@ defmodule Rope do
     rebuild_rope([], subropes)
   end
 
-  defp flatten(leaves, rnode(right: right, left: left)) do
-    leaves 
-      |> flatten(right)
-      |> flatten(left)
-  end
-
-  defp flatten(leaves, rleaf(length: len) = rope) do
-    case len do
-      0 -> leaves
-      n when n > 0 -> 
-        [ rope | leaves ]
-    end
-  end
-
-  defp flatten(leaves, nil) do
-    leaves
-  end
-
 
   defimpl Binary.Chars, for: Rope do
     def to_binary(rope) do
       Rope.to_binary(rope)
     end
+  end
+
+
+  defimpl Enumerable, for: Rope do
+    def count(rope) do
+      Rope.reduce_leaves(rope, 0, fn(leaf, acc) -> acc + 1 end)
+    end
+
+    def member?(rope, value) do
+      try do
+        Rope.reduce_leaves(rope, false,
+          fn(leaf, false) ->
+            if leaf == value do
+              #yeah yeah, it's an error for control flow
+              throw :found
+            end
+            false
+          end)
+      catch
+        :throw, :found -> true
+      end
+    end
+
+    def reduce(rope, acc, fun) do
+      Rope.reduce_leaves(rope, acc, fun)
+    end
+  end
+
+  @doc false
+  def reduce_leaves(rnode(right: right, left: left), acc, fun) do
+      acc = reduce_leaves(left, acc, fun)
+      reduce_leaves(right, acc, fun)
+  end
+
+  def reduce_leaves(rleaf() = leaf, acc, fun) do
+    fun.(leaf, acc)
+  end
+
+  def reduce_leaves(nil, acc, fun) do
+    acc
   end
 
 
