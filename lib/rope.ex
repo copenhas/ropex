@@ -3,13 +3,32 @@ defmodule Rope do
   A rope is a tree structure for representing strings.
 
   ## Ropes
-  A rope provides a scalable way to represent and manipulation strings
+  A rope provides a tree based scalable way to represent and manipulation strings
   from small to huge. They provide the following characteristics:
 
   1. Immutable (kind of has to be anyway for BEAM)
   2. Common operations are effecient
   3. Common oeprations scale
   4. Should be able to handle alternate representations (ex: IO stream) - we'll see
+
+  A rope is build up of leaf and parent/concatenation nodes. Leaf nodes contain the
+  chunks of binary strings that are concatenated or inserted into the rope. The 
+  parent/concatentation nodes are purely used to link the various leaf nodes together.
+  The concatentation nodes contain basic tree information.
+
+  ## Ropes as strings
+  Although they can not be swapped in, this rope implementation supports the
+  Kernel.Inspect and Binary.Chars protocols.
+
+  ## Ropes as enumerations
+  An implmentation of the Enumerable protocol has been provided to enumerate
+  over the leaf nodes which contain the chunks of binary data. The parent/concat
+  nodes are skipped.
+
+  ## Notes
+  Current implementation is mostly focused on operations that work well at larger
+  scales. Performance should hopefully improve over time but don't expect a fully
+  String module compatible API.
 
   ## Links
   - http://citeseer.ist.psu.edu/viewdoc/download?doi=10.1.1.14.9450&rep=rep1&type=pdf
@@ -37,7 +56,13 @@ defmodule Rope do
 
 
   @doc """
-  Creates a new rope with the string provided
+  Creates a new rope with the string provided. Not needed since
+  concat/2 supports strings and ropes as arguments.
+
+  ## Examples
+
+      iex> Rope.new("Don't panic") |> Rope.to_binary
+      "Don't panic"
   """
   @spec new(str | nil) :: rope
   def new(nil) do
@@ -49,7 +74,16 @@ defmodule Rope do
   end
 
   @doc """
-  Concatenates two ropes together producing a new single rope.
+  Concatenates two ropes together producing a new single rope. Accepts
+  ropes or strings as arguments.
+
+  ## Examples
+
+      iex> Rope.concat("Time is", " an illusion.") |> Rope.to_binary
+      "Time is an illusion."
+
+      iex> Rope.concat(Rope.new("terrible"), " ghastly silence") |> Rope.to_binary
+      "terrible ghastly silence"
   """
   @spec concat(rope | str, rope | str) :: rope
   def concat(nil, nil) do
@@ -80,7 +114,7 @@ defmodule Rope do
   Returns a sub-rope starting at the offset given by the first, and a length given by 
   the second. If the offset is greater than string length, than it returns nil.
 
-  Similar to String.slice/3
+  Similar to String.slice/3, check the tests for some examples of usage.
   """
   @spec slice(rope, integer, integer) :: rope
   def slice(nil, _start, _len) do
@@ -142,6 +176,11 @@ defmodule Rope do
 
   @doc """
   Retrieve the length in ut8 characters in the rope.
+
+  ## Examples
+
+      iex> Rope.length(Rope.concat(Rope.new("terrible"), " ghastly silence"))
+      24
   """
   @spec length(rope) :: non_neg_integer
   def length(rope) do
@@ -154,7 +193,16 @@ defmodule Rope do
 
 
   @doc """
-  Returns the depth of the rope tree.
+  Returns the depth of the rope tree. Only particularly of interest to
+  the curious, or those wanting to calculate for themselves when to
+  rebalance.
+
+  Concatenation nodes have a depth of 1 and leaf nodes have a depth of 0.
+
+  ## Examples
+
+      iex> Rope.depth(Rope.concat(Rope.new("terrible"), " ghastly silence"))
+      1
   """
   @spec depth(rope) :: non_neg_integer
   def depth(rope) do
@@ -278,7 +326,7 @@ defmodule Rope do
     end
   end
 
-  def do_replace(rope, pattern, replacement) do
+  defp do_replace(rope, pattern, replacement) do
     termLen = String.length(pattern)
     index = find(rope, pattern)
 
@@ -341,6 +389,9 @@ defmodule Rope do
 
 
   defimpl Binary.Chars, for: Rope do
+    @doc """
+    Converts the entire rope to a single binary string.
+    """
     def to_binary(rope) do
       Rope.to_binary(rope)
     end
@@ -348,10 +399,23 @@ defmodule Rope do
 
 
   defimpl Enumerable, for: Rope do
+    @moduledoc """
+    A convenience implementation that enumerates over the leaves of the rope but none
+    of the parent/concatenation nodes.
+
+    Refer to the Rope module documentation for leaf vs parent/concat node.
+    """
+
+    @doc """
+    A count of the leaf nodes in the rope. This current traverses the rope to count them.
+    """
     def count(rope) do
       Rope.reduce_leaves(rope, 0, fn(leaf, acc) -> acc + 1 end)
     end
 
+    @doc """
+    Searches the ropes leaves in order for a match.
+    """
     def member?(rope, value) do
       try do
         Rope.reduce_leaves(rope, false,
@@ -367,6 +431,9 @@ defmodule Rope do
       end
     end
 
+    @doc """
+    Reduces over the leaf nodes.
+    """
     def reduce(rope, acc, fun) do
       Rope.reduce_leaves(rope, acc, fun)
     end
@@ -388,6 +455,12 @@ defmodule Rope do
 
 
   defimpl Inspect, for: Rope do
+    import Inspect.Algebra
+
+    @doc """
+    Traveres the leaf nodes and converts the chunks of binary data into a single
+    algebra document. Will convert '\n' characters into algebra document line breaks.
+    """
     def inspect(rope, _opts) do
       Rope.to_algebra_doc(rope)
     end
@@ -407,7 +480,8 @@ defmodule Rope do
   end
 
   def to_algebra_doc(rleaf(value: value)) do
-    value
+    [h|tail] = String.split(value, "\n")
+    Enum.reduce(tail, h, fn(next, last) -> Inspect.Algebra.line(last, next) end)
   end
 
 end
