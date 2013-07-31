@@ -31,7 +31,7 @@
 
 <h2>Ropes</h2>
 
-<p>A rope provides a scalable way to represent and manipulation strings
+<p>A rope provides a tree based scalable way to represent and manipulation strings
 from small to huge. They provide the following characteristics:</p>
 
 <ol>
@@ -40,6 +40,28 @@ from small to huge. They provide the following characteristics:</p>
 <li>Common oeprations scale</li>
 <li>Should be able to handle alternate representations (ex: IO stream) - we&#39;ll see</li>
 </ol>
+
+<p>A rope is build up of leaf and parent/concatenation nodes. Leaf nodes contain the
+chunks of binary strings that are concatenated or inserted into the rope. The 
+parent/concatentation nodes are purely used to link the various leaf nodes together.
+The concatentation nodes contain basic tree information.</p>
+
+<h2>Ropes as strings</h2>
+
+<p>Although they can not be swapped in, this rope implementation supports the
+Kernel.Inspect and Binary.Chars protocols.</p>
+
+<h2>Ropes as enumerations</h2>
+
+<p>An implmentation of the Enumerable protocol has been provided to enumerate
+over the leaf nodes which contain the chunks of binary data. The parent/concat
+nodes are skipped.</p>
+
+<h2>Notes</h2>
+
+<p>Current implementation is mostly focused on operations that work well at larger
+scales. Performance should hopefully improve over time but don&#39;t expect a fully
+String module compatible API.</p>
 
 <h2>Links</h2>
 
@@ -51,7 +73,7 @@ from small to huge. They provide the following characteristics:</p>
         </div>
       
 
-      <a href="" target="_blank" class="view_source">Source</a>
+      <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L1" target="_blank" class="view_source">Source</a>
 
       
 
@@ -68,11 +90,6 @@ from small to huge. They provide the following characteristics:</p>
 <li>
   <span class="summary_signature">
     <a href="#depth/1">depth/1</a>
-  </span>
-</li>
-<li>
-  <span class="summary_signature">
-    <a href="#do_replace/3">do_replace/3</a>
   </span>
 </li>
 <li>
@@ -135,30 +152,53 @@ from small to huge. They provide the following characteristics:</p>
   <p class="signature" id="concat/2">
     <strong>concat(rope, rope)</strong>
   </p>
-  <div class="docstring"><p>Concatenates two ropes together producing a new single rope.</p>
+  <div class="docstring"><p>Concatenates two ropes together producing a new single rope. Accepts
+ropes or strings as arguments.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.concat(&quot;Time is&quot;, &quot; an illusion.&quot;) |&gt; Rope.to_binary
+&quot;Time is an illusion.&quot;
+
+iex&gt; Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;) |&gt; Rope.to_binary
+&quot;terrible ghastly silence&quot;
+</code></pre>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L89" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="depth/1">
     <strong>depth(rope)</strong>
   </p>
-  <div class="docstring"><p>Returns the depth of the rope tree.</p>
+  <div class="docstring"><p>Returns the depth of the rope tree. Only particularly of interest to
+the curious, or those wanting to calculate for themselves when to
+rebalance.</p>
+
+<p>Concatenation nodes have a depth of 1 and leaf nodes have a depth of 0.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.depth(Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;))
+1
+</code></pre>
 </div>
   
-</div><div class="detail">
-  <p class="signature" id="do_replace/3">
-    <strong>do_replace(rope, pattern, replacement)</strong>
-  </p>
-  <div class="docstring"></div>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L208" target="_blank" class="view_source">Source</a>
   
-</div><div class="detail">
+</div>
+<div class="detail">
   <p class="signature" id="find/2">
     <strong>find(rope, term)</strong>
   </p>
   <div class="docstring"><p>Returns the index of the first match or -1 if no match was found.</p>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L240" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="find_all/2">
     <strong>find_all(rope, term)</strong>
   </p>
@@ -167,7 +207,10 @@ or an empty list if no matches were found. The list is in order
 from first to last match.</p>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L270" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="insert_at/3">
     <strong>insert_at(rope, index, str)</strong>
   </p>
@@ -175,21 +218,43 @@ from first to last match.</p>
 This wraps around so negative indexes will start from the end.</p>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L221" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="length/1">
     <strong>length(rope)</strong>
   </p>
   <div class="docstring"><p>Retrieve the length in ut8 characters in the rope.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.length(Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;))
+24
+</code></pre>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L186" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="new/1">
     <strong>new(str)</strong>
   </p>
-  <div class="docstring"><p>Creates a new rope with the string provided</p>
+  <div class="docstring"><p>Creates a new rope with the string provided. Not needed since
+concat/2 supports strings and ropes as arguments.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.new(&quot;Don&#39;t panic&quot;) |&gt; Rope.to_binary
+&quot;Don&#39;t panic&quot;
+</code></pre>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L68" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="rebalance/1">
     <strong>rebalance(rope)</strong>
   </p>
@@ -198,7 +263,10 @@ efficient. This is a pretty greedy rebalancing and should produce
 a fully balanced rope.</p>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L165" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="replace/4">
     <strong>replace(rope, pattern, replacement, opts // [])</strong>
   </p>
@@ -208,24 +276,33 @@ By default, it replaces all entries, except if the global option
 is set to false.</p>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L281" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="slice/3">
     <strong>slice(rope, start, len)</strong>
   </p>
   <div class="docstring"><p>Returns a sub-rope starting at the offset given by the first, and a length given by 
 the second. If the offset is greater than string length, than it returns nil.</p>
 
-<p>Similar to String.slice/3</p>
+<p>Similar to String.slice/3, check the tests for some examples of usage.</p>
 </div>
   
-</div><div class="detail">
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L120" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="to_binary/1">
     <strong>to_binary(rope)</strong>
   </p>
   <div class="docstring"><p>Converts the entire rope to a single binary.</p>
 </div>
   
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L295" target="_blank" class="view_source">Source</a>
+  
 </div>
+
         </div>
       
 
