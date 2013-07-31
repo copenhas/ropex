@@ -200,6 +200,14 @@ defmodule RopeTest do
     is_equal rope, String.replace(@text, "you", "me")
   end
 
+  test "insert_at allows creating a new rope with the text added" do
+    orig = build_rope "Beware of the Leopard"
+
+    is_equal Rope.insert_at(orig, 63, " END"), "Beware of the Leopard END"
+    is_equal Rope.insert_at(orig, -8, " MIDDLE"), "Beware of the MIDDLE Leopard"
+    is_equal Rope.insert_at(orig, 2, "SPLIT"), "BeSPLITware of the Leopard"
+  end
+
 
   defp build_rope(text) do
     words = text

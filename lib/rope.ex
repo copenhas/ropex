@@ -16,6 +16,7 @@ defmodule Rope do
   - https://en.wikipedia.org/wiki/Rope_\(data_structure\)
   """
 
+
   defrecordp :rnode, Rope,
     length: 0 :: non_neg_integer,
     depth: 1 :: non_neg_integer,
@@ -164,6 +165,25 @@ defmodule Rope do
     end
   end
 
+  @doc """
+  Produces a new rope with the string inserted at the index provided.
+  This wraps around so negative indexes will start from the end.
+  """
+  @spec insert_at(rope, integer, str) :: rope
+  def insert_at(nil, _index, str) do
+    ropeify(str)
+  end
+
+  def insert_at(rope, index, str) do
+    if index < 0 do
+      index = rope.length + index
+    end
+
+    left = slice(rope, 0, index)
+    right = slice(rope, index, rope.length)
+
+    left |> concat(str) |> concat(right)
+  end
 
   @doc """
   Returns the index of the first match or -1 if no match was found.
