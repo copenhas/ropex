@@ -1,4 +1,4 @@
-.PHONY: test
+.PHONY: test docs
 
 default: ctags test 
 
@@ -11,7 +11,7 @@ ctags:
 	ctags -R .
 
 dialyzer:
-	dialyzer ./ebin --fullpath --no_check_plt
+	dialyzer ./ebin --fullpath --no_check_plt -Wno_return
 
 docs:
-	mix docs
+	mix docs --readme
