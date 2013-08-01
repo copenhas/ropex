@@ -111,6 +111,26 @@ defmodule Rope do
   end
 
   @doc """
+  Concatenates the list of ropes or strings together into a single new rope. 
+
+  ## Examples
+
+      iex> Rope.concat(["Time is", " an illusion."]) |> Rope.to_binary
+      "Time is an illusion."
+
+      iex> Rope.concat([Rope.new("terrible"), " ghastly", " silence"]) |> Rope.to_binary
+      "terrible ghastly silence"
+  """
+  @spec concat(list(rope | str)) :: rope
+  def concat([]) do
+    nil
+  end
+
+  def concat([first | rest]) do
+    Enum.reduce(rest, first, fn(right, left) -> concat(left, right) end)
+  end
+
+  @doc """
   Returns a sub-rope starting at the offset given by the first, and a length given by 
   the second. If the offset is greater than string length, than it returns nil.
 
