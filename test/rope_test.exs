@@ -185,6 +185,10 @@ defmodule RopeTest do
 
     rope = Rope.replace(orig, "you", "me")
     is_equal rope, String.replace(@text, "you", "me")
+
+    rope = @longtext |> build_rope |> Rope.rebalance
+    rope = Rope.replace(rope, "towel", "duck")
+    is_equal rope, String.replace(@longtext, "towel", "duck")
   end
 
   test "insert_at allows creating a new rope with the text added" do
