@@ -5,20 +5,7 @@ defmodule RopeTest do
 
   @simple "hello world"
   @text "Have you any idea how much damage that bulldozer would suffer if I just let it roll straight over you?"
-  @longtext """
-  The Hitchhiker’s Guide to the Galaxy has a few things to say on the subject of towels.
-  A towel, it says, is about the most massively useful thing an interstellar hitch hiker 
-  can have. Partly it has great practical value — you can wrap it around you for warmth 
-  as you bound across the cold moons of Jaglan Beta; you can lie on it on the brilliant 
-  marble‐sanded beaches of Santraginus V, inhaling the heady sea vapours; you can sleep 
-  under it beneath the stars which shine so redly on the desert world of Kakrafoon; use 
-  it to sail a mini raft down the slow heavy river Moth; wet it for use in 
-  hand‐to‐hand‐combat; wrap it round your head to ward off noxious fumes or to avoid the 
-  gaze of the Ravenous Bugblatter Beast of Traal (a mindbogglingly stupid animal, it 
-  assumes that if you can't see it, it can't see you — daft as a bush, but very 
-  ravenous); you can wave your towel in emergencies as a distress signal, and of course 
-  dry yourself off with it if it still seems to be clean enough.
-  """
+  @longtext File.read!("test/fixtures/towels.txt")
 
   test "can create a basic rope" do
     rope = Rope.new(@simple)
@@ -177,11 +164,11 @@ defmodule RopeTest do
   test "find_all returns an list of matches" do
     rope = @longtext |> build_rope |> Rope.rebalance
     indexes = Rope.find_all(rope, "towel")
-    assert indexes == [79, 84, 867]
+    assert indexes == [79, 89, 868]
 
     rope = @text |> build_rope |> Rope.rebalance
     indexes = Rope.find_all(rope, "you")
-    assert indexes == [5,95]
+    assert indexes == [5,98]
   end
 
   test "find_all returns an empty list if there are no matches" do
@@ -222,14 +209,14 @@ defmodule RopeTest do
 
   defp is_equal(rope, str)
   when is_record(rope, Rope) and is_binary(str)  do
-    assert Rope.length(rope) == String.length(str)
     assert rope_value(rope) == str
+    assert Rope.length(rope) == String.length(str)
   end
 
   defp is_equal(rope1, rope2)
   when is_record(rope1, Rope) and is_record(rope2, Rope)  do
-    assert Rope.length(rope1) == Rope.length(rope2)
     assert rope_value(rope1) == rope_value(rope2)
+    assert Rope.length(rope1) == Rope.length(rope2)
   end
 
   defp is_equal(thing1, thing2) do

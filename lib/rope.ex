@@ -223,6 +223,9 @@ defmodule Rope do
 
       iex> Rope.depth(Rope.concat(Rope.new("terrible"), " ghastly silence"))
       1
+
+      iex> Rope.depth(Rope.concat([Rope.new("terrible"), " ghastly", " silence"]))
+      2
   """
   @spec depth(rope) :: non_neg_integer
   def depth(rope) do
@@ -236,6 +239,14 @@ defmodule Rope do
   @doc """
   Produces a new rope with the string inserted at the index provided.
   This wraps around so negative indexes will start from the end.
+
+  ## Examples
+
+      iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), 16, "of ") |> Rope.to_binary
+      "infinite number of monkeys"
+
+      iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), -7, "of ") |> Rope.to_binary
+      "infinite number of monkeys"
   """
   @spec insert_at(rope, integer, str) :: rope
   def insert_at(nil, _index, str) do
@@ -255,6 +266,14 @@ defmodule Rope do
 
   @doc """
   Returns the index of the first match or -1 if no match was found.
+
+  ## Examples
+
+      iex> Rope.find(Rope.concat(["loathe it", " or ignore it,", " you can't like it"]), "it")
+      7
+
+      iex> Rope.find(Rope.concat(["loathe it", " or ignore it,", " you can't like it"]), "and")
+      -1
   """
   @spec find(rope, str) :: integer
   def find(nil, _term) do
@@ -285,6 +304,14 @@ defmodule Rope do
   Find all matches in the rope returning a list of indexes,
   or an empty list if no matches were found. The list is in order
   from first to last match.
+
+  ## Examples
+
+      iex> Rope.find_all(Rope.concat(["loathe it", " or ignore it,", " you can't like it"]), "it")
+      [7, 20, 39]
+
+      iex> Rope.find_all(Rope.concat(["loathe it", " or ignore it,", " you can't like it"]), "and")
+      []
   """
   @spec find_all(rope, str) :: list(non_neg_integer)
   def find_all(rope, term) do
@@ -332,17 +359,16 @@ defmodule Rope do
   defp do_find_all(rope, term, matches) do
     termLen = String.length term
 
-    lastMatch = case matches do
+    offset = case matches do
       [] -> 0
-      [last | _tail] -> last
+      [last | _ ] -> last + termLen 
     end
 
     case find(rope, term) do
       -1 -> matches
       match when match >= 0 ->
-        offset = match + termLen
-        leftOvers = Rope.slice(rope, offset, rope.length - offset)
-        do_find_all(leftOvers, term, [match + lastMatch | matches])
+        rightOvers = Rope.slice(rope, match + termLen, rope.length)
+        do_find_all(rightOvers, term, [match + offset | matches])
     end
   end
 
@@ -362,13 +388,13 @@ defmodule Rope do
 
     {offset, subropes} = Enum.reduce(indexes, {0, []}, fn(index, {offset, ropes}) ->
       len = index - offset
-      if offset != 0, do: len = len + termLen
+      if offset != 0, do: len = len
 
       leftRope = slice(rope, offset, len)
       {index + termLen, [replacement | [leftRope | ropes]]}
     end)
 
-    leftRope = slice(rope, offset + termLen, rope.length)
+    leftRope = slice(rope, offset, rope.length)
     subropes = [leftRope | subropes]
 
     subropes = Enum.reverse subropes
