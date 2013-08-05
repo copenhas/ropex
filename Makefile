@@ -1,16 +1,16 @@
-.PHONY: test docs
+.PHONY: test docs tags
 
-default: ctags test 
+default: tags test 
 
-all: ctags test dialyzer docs
+all: tags test check docs
 
 test:
 	mix test
 
-ctags:
+tags:
 	ctags -R .
 
-dialyzer:
+check:
 	dialyzer ./ebin --fullpath --no_check_plt -Wno_return
 
 docs:
