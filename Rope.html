@@ -84,6 +84,11 @@ String module compatible API.</p>
         <ul class="summary">
           <li>
   <span class="summary_signature">
+    <a href="#concat/1">concat/1</a>
+  </span>
+</li>
+<li>
+  <span class="summary_signature">
     <a href="#concat/2">concat/2</a>
   </span>
 </li>
@@ -149,6 +154,25 @@ String module compatible API.</p>
         <div id="functions_details" class="details_list">
           <h2>Functions</h2>
           <div class="detail">
+  <p class="signature" id="concat/1">
+    <strong>concat(list1)</strong>
+  </p>
+  <div class="docstring"><p>Concatenates the list of ropes or strings together into a single new rope. </p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.concat([&quot;Time is&quot;, &quot; an illusion.&quot;]) |&gt; Rope.to_binary
+&quot;Time is an illusion.&quot;
+
+iex&gt; Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&quot;, &quot; silence&quot;]) |&gt; Rope.to_binary
+&quot;terrible ghastly silence&quot;
+</code></pre>
+</div>
+  
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L128" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="concat/2">
     <strong>concat(rope, rope)</strong>
   </p>
@@ -182,10 +206,13 @@ rebalance.</p>
 
 <pre><code>iex&gt; Rope.depth(Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;))
 1
+
+iex&gt; Rope.depth(Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&quot;, &quot; silence&quot;]))
+2
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L208" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L243" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -193,9 +220,18 @@ rebalance.</p>
     <strong>find(rope, term)</strong>
   </p>
   <div class="docstring"><p>Returns the index of the first match or -1 if no match was found.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.find(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;, &quot; you can&#39;t like it&quot;]), &quot;it&quot;)
+7
+
+iex&gt; Rope.find(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;, &quot; you can&#39;t like it&quot;]), &quot;and&quot;)
+-1
+</code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L240" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L291" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -205,9 +241,18 @@ rebalance.</p>
   <div class="docstring"><p>Find all matches in the rope returning a list of indexes,
 or an empty list if no matches were found. The list is in order
 from first to last match.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.find_all(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;, &quot; you can&#39;t like it&quot;]), &quot;it&quot;)
+[7, 20, 39]
+
+iex&gt; Rope.find_all(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;, &quot; you can&#39;t like it&quot;]), &quot;and&quot;)
+[]
+</code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L270" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L329" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -216,9 +261,18 @@ from first to last match.</p>
   </p>
   <div class="docstring"><p>Produces a new rope with the string inserted at the index provided.
 This wraps around so negative indexes will start from the end.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, &quot;monkeys&quot;]), 16, &quot;of &quot;) |&gt; Rope.to_binary
+&quot;infinite number of monkeys&quot;
+
+iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, &quot;monkeys&quot;]), -7, &quot;of &quot;) |&gt; Rope.to_binary
+&quot;infinite number of monkeys&quot;
+</code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L221" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L264" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -234,7 +288,7 @@ This wraps around so negative indexes will start from the end.</p>
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L186" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L218" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -263,7 +317,7 @@ efficient. This is a pretty greedy rebalancing and should produce
 a fully balanced rope.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L165" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L197" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -276,7 +330,7 @@ By default, it replaces all entries, except if the global option
 is set to false.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L281" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L340" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -289,7 +343,7 @@ the second. If the offset is greater than string length, than it returns nil.</p
 <p>Similar to String.slice/3, check the tests for some examples of usage.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L120" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L143" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -299,7 +353,7 @@ the second. If the offset is greater than string length, than it returns nil.</p
   <div class="docstring"><p>Converts the entire rope to a single binary.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L295" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L354" target="_blank" class="view_source">Source</a>
   
 </div>
 
