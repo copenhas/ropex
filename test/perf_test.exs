@@ -14,22 +14,22 @@ defmodule PerfTest do
     assert time < threshold, "10,000 concats completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
-  test "rebalancing 10,000 words" do
-    threshold = 40_000 #40 milliseconds
+  test "rebalancing 100,000 words" do
+    threshold = 100_000 #100 milliseconds
     time = build_long_rope |> build_ctxt |> run(1, :rebalance)
-    IO.puts "\nROPE: 10,000 node rebalance took #{time} microseconds"
-    assert time < threshold, "rebalancing worst case 10,000 leaf rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+    IO.puts "\nROPE: 100,000 node rebalance took #{time} microseconds"
+    assert time < threshold, "rebalancing worst case 100,000 leaf rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
   test "1,000 slices on a balanced rope" do
-    threshold = 100_000 #1/10 second
-    time = build_rope |> build_ctxt |> run(1000, :slice)
+    threshold = 175_000 #100 milliseconds
+    time = build_rope |> build_ctxt |> run(1_000, :slice)
     IO.puts "\nROPE: 1,000 slice took #{time} microseconds"
     assert time < threshold, "1,000 slices on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
   test "100 finds on a balanced rope" do
-    threshold = 500_000 #1/2 second
+    threshold = 1_000 #1/2 second
     time = build_rope |> build_ctxt |> run(100, :find)
     IO.puts "\nROPE: 100 find took #{time} microseconds"
     assert time < threshold, "100 finds on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
@@ -59,7 +59,7 @@ defmodule PerfTest do
 
   def build_long_rope() do
     extra = build_extra
-    Enum.reduce(1..10_000, "", fn(_count, left) ->
+    Enum.reduce(1..100_000, "", fn(_count, left) ->
       Rope.concat([left | Enum.take(extra, 1)])
     end)
   end

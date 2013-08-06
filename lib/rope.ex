@@ -102,9 +102,12 @@ defmodule Rope do
     rope1 = ropeify rope1
     rope2 = ropeify rope2
 
-    depth = Enum.max([rope1.depth, rope2.depth]) + 1
+    depth = rope1.depth
+    if rope2.depth > depth do
+      depth = rope2.depth
+    end
 
-    rnode(depth: depth,
+    rnode(depth: depth + 1,
           left: rope1,
           right: rope2,
           length: rope1.length + rope2.length)
@@ -141,8 +144,17 @@ defmodule Rope do
     nil
   end
 
-  def slice(rleaf(value: value), start, len) do
-    ropeify String.slice(value, start, len)
+  def slice(leaf = rleaf(length: rlen, value: value), start, len) do
+    if start == 0 and rlen <= len do
+      leaf
+    else
+      ropeify String.slice(value, start, len)
+    end
+  end
+
+  def slice(node = rnode(length: rlen), start, len) 
+  when start == 0 and rlen <= len do
+    node
   end
 
   def slice(rnode(length: rlen), start, _len) 
