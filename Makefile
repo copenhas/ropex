@@ -7,6 +7,9 @@ all: tags test check docs
 test:
 	mix test
 
+perf:
+	elixir -pa ebin test/performance.exs
+
 tags:
 	ctags -R .
 

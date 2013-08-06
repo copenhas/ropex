@@ -1,4 +1,6 @@
-defmodule PerfTest do
+Code.require_file "test_helper.exs", __DIR__
+
+defmodule PerformanceTest do
   use ExUnit.Case
 
   defrecord TestCtxt,
@@ -7,13 +9,6 @@ defmodule PerfTest do
     time: 0
 
 
-  test "10,000 concats" do
-    threshold = 30_000 #30 milliseconds
-    time = build_rope |> build_ctxt |> run(10_000, :concat)
-    IO.puts "\nROPE: 10,000 concats took #{time} microseconds"
-    assert time < threshold, "10,000 concats completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
-  end
-
   test "rebalancing 100,000 words" do
     threshold = 100_000 #100 milliseconds
     time = build_long_rope |> build_ctxt |> run(1, :rebalance)
@@ -21,29 +16,57 @@ defmodule PerfTest do
     assert time < threshold, "rebalancing worst case 100,000 leaf rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
-  test "1,000 slices on a balanced rope" do
-    threshold = 175_000 #100 milliseconds
-    time = build_rope |> build_ctxt |> run(1_000, :slice)
-    IO.puts "\nROPE: 1,000 slice took #{time} microseconds"
-    assert time < threshold, "1,000 slices on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+  test "small rope performance" do
+    threshold = 3_000 #3 milliseconds
+    time = build_rope |> build_ctxt |> run(1_000, :concat)
+    IO.puts "\nSMALL ROPE: 1,000 concats took #{time} microseconds"
+    assert time < threshold, "1,000 concats completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+
+    threshold = 17_000 #100 milliseconds
+    time = build_rope |> build_ctxt |> run(10, :slice)
+    IO.puts "\nSMALL ROPE: 10 slice took #{time} microseconds"
+    assert time < threshold, "10 slices on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+
+    threshold = 1_000
+    time = build_rope |> build_ctxt |> run(10, :find)
+    IO.puts "\nSMALL ROPE: 10 find took #{time} microseconds"
+    assert time < threshold, "10 finds on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
-  test "100 finds on a balanced rope" do
-    threshold = 1_000 #1/2 second
-    time = build_rope |> build_ctxt |> run(100, :find)
-    IO.puts "\nROPE: 100 find took #{time} microseconds"
-    assert time < threshold, "100 finds on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+  test "huge rope performance" do
+    threshold = 3_000 #3 milliseconds
+    time = build_huge_rope |> build_ctxt |> run(1_000, :concat)
+    IO.puts "\nHUGE ROPE: 1,000 concats took #{time} microseconds"
+    assert time < threshold, "1,000 concats completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+
+    threshold = 40_000 #40 milliseconds
+    time = build_huge_rope |> build_ctxt |> run(10, :slice)
+    IO.puts "\nHUGE ROPE: 10 slice took #{time} microseconds"
+    assert time < threshold, "10 slices on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+
+    IO.puts "\nHUGE ROPE: 10 find took nevermind microseconds"
   end
 
-  test "string performance" do
-    time = build_text |> build_ctxt |> run(10_000, :concat)
-    IO.puts "\nSTRING: 10,000 concats took #{time} microseconds"
+  test "small string performance" do
+    time = build_text |> build_ctxt |> run(1_000, :concat)
+    IO.puts "\nSMALL STRING: 1,000 concats took #{time} microseconds"
 
-    time = build_text |> build_ctxt |> run(1_000, :slice)
-    IO.puts "\nSTRING: 1,000 slices took #{time} microseconds"
+    time = build_text |> build_ctxt |> run(10, :slice)
+    IO.puts "\nSMALL STRING: 10 slices took #{time} microseconds"
 
-    time = build_text |> build_ctxt |> run(100, :find)
-    IO.puts "\nSTRING: 100 contains? took #{time} microseconds"
+    time = build_text |> build_ctxt |> run(10, :find)
+    IO.puts "\nSMALL STRING: 10 contains? took #{time} microseconds"
+  end
+
+  test "huge string performance" do
+    time = build_huge_text |> build_ctxt |> run(1000, :concat)
+    IO.puts "\nHUGE STRING: 1,000 concats took #{time} microseconds"
+
+    time = build_huge_text |> build_ctxt |> run(10, :slice)
+    IO.puts "\nHUGE STRING: 10 slices took #{time} microseconds"
+
+    time = build_huge_text |> build_ctxt |> run(10, :find)
+    IO.puts "\nHUGE STRING: 10 contains? took #{time} microseconds"
   end
 
 
@@ -53,6 +76,12 @@ defmodule PerfTest do
 
   def build_rope do
     File.stream!("test/fixtures/hello_ground.txt")
+      |> Enum.reduce("", fn(line, rope) -> Rope.concat(rope, line) end)
+      |> Rope.rebalance
+  end
+
+  def build_huge_rope do
+    File.stream!("test/fixtures/dracula.txt")
       |> Enum.reduce("", fn(line, rope) -> Rope.concat(rope, line) end)
       |> Rope.rebalance
   end
@@ -70,6 +99,10 @@ defmodule PerfTest do
 
   def build_text do
     File.read!("test/fixtures/hello_ground.txt")
+  end
+
+  def build_huge_text do
+    File.read!("test/fixtures/dracula.txt")
   end
 
   def get_timestamp do
