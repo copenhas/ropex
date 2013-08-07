@@ -197,7 +197,6 @@ defmodule RopeTest do
     is_equal Rope.insert_at(orig, 2, "SPLIT"), "BeSPLITware of the Leopard"
   end
 
-
   defp build_rope(text) do
     words = text
       |> String.split(" ")
@@ -228,5 +227,4 @@ defmodule RopeTest do
   defp rope_value(rope) do
     Kernel.inspect rope
   end
-
 end

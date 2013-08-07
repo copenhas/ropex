@@ -1,0 +1,674 @@
+digraph towelsrebalanced {
+	node [shape=record]
+	49766452 [label="{<type> concat | <length> 988 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	20177316 [label="{<type> concat | <length> 682 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	117737343 [label="{<type> concat | <length> 331 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	77956410 [label="{<type> concat | <length> 177 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	23192576 [label="{<type> concat | <length> 78 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	98890646 [label="{<type> concat | <length> 42 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	73260613 [label="{<type> concat | <length> 25 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	92194227 [label="{<type> concat | <length> 16 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	35352031 [label="{ <type> leaf | <length> 3 | <value> &#8220;The&#8221; }"]
+	92194227:left -> 35352031:type
+	43381977 [label="{ <type> leaf | <length> 13 | <value> &#8220; Hitchhiker’s&#8221; }"]
+	92194227:right -> 43381977:type
+	73260613:left -> 92194227:type
+	32839190 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	89790233 [label="{ <type> leaf | <length> 6 | <value> &#8220; Guide&#8221; }"]
+	32839190:left -> 89790233:type
+	130879116 [label="{ <type> leaf | <length> 3 | <value> &#8220; to&#8221; }"]
+	32839190:right -> 130879116:type
+	73260613:right -> 32839190:type
+	98890646:left -> 73260613:type
+	15851508 [label="{<type> concat | <length> 17 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	37444988 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131910392 [label="{ <type> leaf | <length> 4 | <value> &#8220; the&#8221; }"]
+	37444988:left -> 131910392:type
+	127390009 [label="{ <type> leaf | <length> 7 | <value> &#8220; Galaxy&#8221; }"]
+	37444988:right -> 127390009:type
+	15851508:left -> 37444988:type
+	83518295 [label="{<type> concat | <length> 6 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	22918205 [label="{ <type> leaf | <length> 4 | <value> &#8220; has&#8221; }"]
+	83518295:left -> 22918205:type
+	131930546 [label="{ <type> leaf | <length> 2 | <value> &#8220; a&#8221; }"]
+	83518295:right -> 131930546:type
+	15851508:right -> 83518295:type
+	98890646:right -> 15851508:type
+	23192576:left -> 98890646:type
+	98775657 [label="{<type> concat | <length> 36 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	24268459 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	32971768 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	45148330 [label="{ <type> leaf | <length> 4 | <value> &#8220; few&#8221; }"]
+	32971768:left -> 45148330:type
+	10021242 [label="{ <type> leaf | <length> 7 | <value> &#8220; things&#8221; }"]
+	32971768:right -> 10021242:type
+	24268459:left -> 32971768:type
+	60496121 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	60496121:left -> 130879116:type
+	9430689 [label="{ <type> leaf | <length> 4 | <value> &#8220; say&#8221; }"]
+	60496121:right -> 9430689:type
+	24268459:right -> 60496121:type
+	98775657:left -> 24268459:type
+	111858237 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131241313 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	60868260 [label="{ <type> leaf | <length> 3 | <value> &#8220; on&#8221; }"]
+	131241313:left -> 60868260:type
+	131241313:right -> 131910392:type
+	111858237:left -> 131241313:type
+	36482289 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	41020473 [label="{ <type> leaf | <length> 8 | <value> &#8220; subject&#8221; }"]
+	36482289:left -> 41020473:type
+	126584922 [label="{ <type> leaf | <length> 3 | <value> &#8220; of&#8221; }"]
+	36482289:right -> 126584922:type
+	111858237:right -> 36482289:type
+	98775657:right -> 111858237:type
+	23192576:right -> 98775657:type
+	77956410:left -> 23192576:type
+	18524267 [label="{<type> concat | <length> 99 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	80671538 [label="{<type> concat | <length> 44 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	88291647 [label="{<type> concat | <length> 26 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	101404491 [label="{<type> concat | <length> 17 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	63890629 [label="{ <type> leaf | <length> 10 | <value> &#8220; towels.
+A&#8221; }"]
+	101404491:left -> 63890629:type
+	43304954 [label="{ <type> leaf | <length> 7 | <value> &#8220; towel,&#8221; }"]
+	101404491:right -> 43304954:type
+	88291647:left -> 101404491:type
+	108979969 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	45485964 [label="{ <type> leaf | <length> 3 | <value> &#8220; it&#8221; }"]
+	108979969:left -> 45485964:type
+	97053210 [label="{ <type> leaf | <length> 6 | <value> &#8220; says,&#8221; }"]
+	108979969:right -> 97053210:type
+	88291647:right -> 108979969:type
+	80671538:left -> 88291647:type
+	17529192 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	59976280 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	39117409 [label="{ <type> leaf | <length> 3 | <value> &#8220; is&#8221; }"]
+	59976280:left -> 39117409:type
+	114724668 [label="{ <type> leaf | <length> 6 | <value> &#8220; about&#8221; }"]
+	59976280:right -> 114724668:type
+	17529192:left -> 59976280:type
+	54812488 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	54812488:left -> 131910392:type
+	59158124 [label="{ <type> leaf | <length> 5 | <value> &#8220; most&#8221; }"]
+	54812488:right -> 59158124:type
+	17529192:right -> 54812488:type
+	80671538:right -> 17529192:type
+	18524267:left -> 80671538:type
+	59590820 [label="{<type> concat | <length> 55 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131370063 [label="{<type> concat | <length> 26 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	73016437 [label="{<type> concat | <length> 17 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	74324214 [label="{ <type> leaf | <length> 10 | <value> &#8220; massively&#8221; }"]
+	73016437:left -> 74324214:type
+	19106912 [label="{ <type> leaf | <length> 7 | <value> &#8220; useful&#8221; }"]
+	73016437:right -> 19106912:type
+	131370063:left -> 73016437:type
+	133145422 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	129153238 [label="{ <type> leaf | <length> 6 | <value> &#8220; thing&#8221; }"]
+	133145422:left -> 129153238:type
+	118840981 [label="{ <type> leaf | <length> 3 | <value> &#8220; an&#8221; }"]
+	133145422:right -> 118840981:type
+	131370063:right -> 133145422:type
+	59590820:left -> 131370063:type
+	64617807 [label="{<type> concat | <length> 29 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	112192508 [label="{<type> concat | <length> 19 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	5190575 [label="{ <type> leaf | <length> 13 | <value> &#8220; interstellar&#8221; }"]
+	112192508:left -> 5190575:type
+	102402750 [label="{ <type> leaf | <length> 6 | <value> &#8220; hitch&#8221; }"]
+	112192508:right -> 102402750:type
+	64617807:left -> 112192508:type
+	119358930 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	104789247 [label="{ <type> leaf | <length> 6 | <value> &#8220; hiker&#8221; }"]
+	119358930:left -> 104789247:type
+	67299124 [label="{ <type> leaf | <length> 4 | <value> &#8220; can&#8221; }"]
+	119358930:right -> 67299124:type
+	64617807:right -> 119358930:type
+	59590820:right -> 64617807:type
+	18524267:right -> 59590820:type
+	77956410:right -> 18524267:type
+	117737343:left -> 77956410:type
+	17954815 [label="{<type> concat | <length> 154 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	90603939 [label="{<type> concat | <length> 82 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	65544335 [label="{<type> concat | <length> 44 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	63645623 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131430429 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	126927696 [label="{ <type> leaf | <length> 6 | <value> &#8220; have.&#8221; }"]
+	131430429:left -> 126927696:type
+	45323213 [label="{ <type> leaf | <length> 7 | <value> &#8220; Partly&#8221; }"]
+	131430429:right -> 45323213:type
+	63645623:left -> 131430429:type
+	36296527 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	36296527:left -> 45485964:type
+	36296527:right -> 22918205:type
+	63645623:right -> 36296527:type
+	65544335:left -> 63645623:type
+	5673013 [label="{<type> concat | <length> 24 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	36519471 [label="{<type> concat | <length> 16 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	5820391 [label="{ <type> leaf | <length> 6 | <value> &#8220; great&#8221; }"]
+	36519471:left -> 5820391:type
+	84687241 [label="{ <type> leaf | <length> 10 | <value> &#8220; practical&#8221; }"]
+	36519471:right -> 84687241:type
+	5673013:left -> 36519471:type
+	69767220 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	87473764 [label="{ <type> leaf | <length> 6 | <value> &#8220; value&#8221; }"]
+	69767220:left -> 87473764:type
+	8265271 [label="{ <type> leaf | <length> 2 | <value> &#8220; —&#8221; }"]
+	69767220:right -> 8265271:type
+	5673013:right -> 69767220:type
+	65544335:right -> 5673013:type
+	90603939:left -> 65544335:type
+	82163533 [label="{<type> concat | <length> 38 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	92590872 [label="{<type> concat | <length> 16 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	121208747 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	111192482 [label="{ <type> leaf | <length> 4 | <value> &#8220; you&#8221; }"]
+	121208747:left -> 111192482:type
+	121208747:right -> 67299124:type
+	92590872:left -> 121208747:type
+	89015611 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	127306320 [label="{ <type> leaf | <length> 5 | <value> &#8220; wrap&#8221; }"]
+	89015611:left -> 127306320:type
+	89015611:right -> 45485964:type
+	92590872:right -> 89015611:type
+	82163533:left -> 92590872:type
+	20124788 [label="{<type> concat | <length> 22 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	132514066 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	90165780 [label="{ <type> leaf | <length> 7 | <value> &#8220; around&#8221; }"]
+	132514066:left -> 90165780:type
+	132514066:right -> 111192482:type
+	20124788:left -> 132514066:type
+	130471185 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	93178158 [label="{ <type> leaf | <length> 4 | <value> &#8220; for&#8221; }"]
+	130471185:left -> 93178158:type
+	20097787 [label="{ <type> leaf | <length> 7 | <value> &#8220; warmth&#8221; }"]
+	130471185:right -> 20097787:type
+	20124788:right -> 130471185:type
+	82163533:right -> 20124788:type
+	90603939:right -> 82163533:type
+	17954815:left -> 90603939:type
+	111857573 [label="{<type> concat | <length> 72 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	97126877 [label="{<type> concat | <length> 38 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	2407674 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	28181199 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	29588006 [label="{ <type> leaf | <length> 3 | <value> &#8220; as&#8221; }"]
+	28181199:left -> 29588006:type
+	28181199:right -> 111192482:type
+	2407674:left -> 28181199:type
+	95548498 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	36411768 [label="{ <type> leaf | <length> 6 | <value> &#8220; bound&#8221; }"]
+	95548498:left -> 36411768:type
+	124103967 [label="{ <type> leaf | <length> 7 | <value> &#8220; across&#8221; }"]
+	95548498:right -> 124103967:type
+	2407674:right -> 95548498:type
+	97126877:left -> 2407674:type
+	71799825 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	123882367 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	123882367:left -> 131910392:type
+	53155593 [label="{ <type> leaf | <length> 5 | <value> &#8220; cold&#8221; }"]
+	123882367:right -> 53155593:type
+	71799825:left -> 123882367:type
+	125427059 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	93694111 [label="{ <type> leaf | <length> 6 | <value> &#8220; moons&#8221; }"]
+	125427059:left -> 93694111:type
+	125427059:right -> 126584922:type
+	71799825:right -> 125427059:type
+	97126877:right -> 71799825:type
+	111857573:left -> 97126877:type
+	70675537 [label="{<type> concat | <length> 34 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	55993719 [label="{<type> concat | <length> 21 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	100558120 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	51151618 [label="{ <type> leaf | <length> 7 | <value> &#8220; Jaglan&#8221; }"]
+	100558120:left -> 51151618:type
+	66866529 [label="{ <type> leaf | <length> 6 | <value> &#8220; Beta;&#8221; }"]
+	100558120:right -> 66866529:type
+	55993719:left -> 100558120:type
+	55993719:right -> 121208747:type
+	70675537:left -> 55993719:type
+	6277695 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131834174 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	72385362 [label="{ <type> leaf | <length> 4 | <value> &#8220; lie&#8221; }"]
+	131834174:left -> 72385362:type
+	131834174:right -> 60868260:type
+	6277695:left -> 131834174:type
+	124745531 [label="{<type> concat | <length> 6 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	124745531:left -> 45485964:type
+	124745531:right -> 60868260:type
+	6277695:right -> 124745531:type
+	70675537:right -> 6277695:type
+	111857573:right -> 70675537:type
+	17954815:right -> 111857573:type
+	117737343:right -> 17954815:type
+	20177316:left -> 117737343:type
+	17660219 [label="{<type> concat | <length> 351 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	54018617 [label="{<type> concat | <length> 189 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	100266118 [label="{<type> concat | <length> 106 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	75354449 [label="{<type> concat | <length> 63 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	120220162 [label="{<type> concat | <length> 36 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	15377412 [label="{<type> concat | <length> 14 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	15377412:left -> 131910392:type
+	30377348 [label="{ <type> leaf | <length> 10 | <value> &#8220; brilliant&#8221; }"]
+	15377412:right -> 30377348:type
+	120220162:left -> 15377412:type
+	122664378 [label="{<type> concat | <length> 22 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	121722371 [label="{ <type> leaf | <length> 14 | <value> &#8220; marble‐sanded&#8221; }"]
+	122664378:left -> 121722371:type
+	11437932 [label="{ <type> leaf | <length> 8 | <value> &#8220; beaches&#8221; }"]
+	122664378:right -> 11437932:type
+	120220162:right -> 122664378:type
+	75354449:left -> 120220162:type
+	75027874 [label="{<type> concat | <length> 27 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	125440943 [label="{<type> concat | <length> 15 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	125440943:left -> 126584922:type
+	43353192 [label="{ <type> leaf | <length> 12 | <value> &#8220; Santraginus&#8221; }"]
+	125440943:right -> 43353192:type
+	75027874:left -> 125440943:type
+	120777249 [label="{<type> concat | <length> 12 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	48890274 [label="{ <type> leaf | <length> 3 | <value> &#8220; V,&#8221; }"]
+	120777249:left -> 48890274:type
+	118081362 [label="{ <type> leaf | <length> 9 | <value> &#8220; inhaling&#8221; }"]
+	120777249:right -> 118081362:type
+	75027874:right -> 120777249:type
+	75354449:right -> 75027874:type
+	100266118:left -> 75354449:type
+	32727651 [label="{<type> concat | <length> 43 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	83767340 [label="{<type> concat | <length> 23 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131857354 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131857354:left -> 131910392:type
+	61577580 [label="{ <type> leaf | <length> 6 | <value> &#8220; heady&#8221; }"]
+	131857354:right -> 61577580:type
+	83767340:left -> 131857354:type
+	116113447 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	37704441 [label="{ <type> leaf | <length> 4 | <value> &#8220; sea&#8221; }"]
+	116113447:left -> 37704441:type
+	93592601 [label="{ <type> leaf | <length> 9 | <value> &#8220; vapours;&#8221; }"]
+	116113447:right -> 93592601:type
+	83767340:right -> 116113447:type
+	32727651:left -> 83767340:type
+	131171303 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	131171303:left -> 121208747:type
+	93122191 [label="{<type> concat | <length> 12 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	33798840 [label="{ <type> leaf | <length> 6 | <value> &#8220; sleep&#8221; }"]
+	93122191:left -> 33798840:type
+	2848050 [label="{ <type> leaf | <length> 6 | <value> &#8220; under&#8221; }"]
+	93122191:right -> 2848050:type
+	131171303:right -> 93122191:type
+	32727651:right -> 131171303:type
+	100266118:right -> 32727651:type
+	54018617:left -> 100266118:type
+	85199881 [label="{<type> concat | <length> 83 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	114285203 [label="{<type> concat | <length> 42 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	13500755 [label="{<type> concat | <length> 21 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	124809317 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	124809317:left -> 45485964:type
+	56992083 [label="{ <type> leaf | <length> 8 | <value> &#8220; beneath&#8221; }"]
+	124809317:right -> 56992083:type
+	13500755:left -> 124809317:type
+	9026394 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	9026394:left -> 131910392:type
+	98489416 [label="{ <type> leaf | <length> 6 | <value> &#8220; stars&#8221; }"]
+	9026394:right -> 98489416:type
+	13500755:right -> 9026394:type
+	114285203:left -> 13500755:type
+	80926276 [label="{<type> concat | <length> 21 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	75945304 [label="{<type> concat | <length> 12 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	24848973 [label="{ <type> leaf | <length> 6 | <value> &#8220; which&#8221; }"]
+	75945304:left -> 24848973:type
+	92472198 [label="{ <type> leaf | <length> 6 | <value> &#8220; shine&#8221; }"]
+	75945304:right -> 92472198:type
+	80926276:left -> 75945304:type
+	120402623 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	103060354 [label="{ <type> leaf | <length> 3 | <value> &#8220; so&#8221; }"]
+	120402623:left -> 103060354:type
+	37359851 [label="{ <type> leaf | <length> 6 | <value> &#8220; redly&#8221; }"]
+	120402623:right -> 37359851:type
+	80926276:right -> 120402623:type
+	114285203:right -> 80926276:type
+	85199881:left -> 114285203:type
+	120381500 [label="{<type> concat | <length> 41 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	66838945 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	66838945:left -> 131241313:type
+	79467513 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	15257755 [label="{ <type> leaf | <length> 7 | <value> &#8220; desert&#8221; }"]
+	79467513:left -> 15257755:type
+	118860212 [label="{ <type> leaf | <length> 6 | <value> &#8220; world&#8221; }"]
+	79467513:right -> 118860212:type
+	66838945:right -> 79467513:type
+	120381500:left -> 66838945:type
+	26974697 [label="{<type> concat | <length> 21 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	53608210 [label="{<type> concat | <length> 14 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	53608210:left -> 126584922:type
+	120646838 [label="{ <type> leaf | <length> 11 | <value> &#8220; Kakrafoon;&#8221; }"]
+	53608210:right -> 120646838:type
+	26974697:left -> 53608210:type
+	60638267 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	113553080 [label="{ <type> leaf | <length> 4 | <value> &#8220; use&#8221; }"]
+	60638267:left -> 113553080:type
+	60638267:right -> 45485964:type
+	26974697:right -> 60638267:type
+	120381500:right -> 26974697:type
+	85199881:right -> 120381500:type
+	54018617:right -> 85199881:type
+	17660219:left -> 54018617:type
+	102484515 [label="{<type> concat | <length> 162 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	34549422 [label="{<type> concat | <length> 70 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	50233565 [label="{<type> concat | <length> 34 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	77693299 [label="{<type> concat | <length> 15 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	74632109 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	74632109:left -> 130879116:type
+	29215850 [label="{ <type> leaf | <length> 5 | <value> &#8220; sail&#8221; }"]
+	74632109:right -> 29215850:type
+	77693299:left -> 74632109:type
+	69954841 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	69954841:left -> 131930546:type
+	37890819 [label="{ <type> leaf | <length> 5 | <value> &#8220; mini&#8221; }"]
+	69954841:right -> 37890819:type
+	77693299:right -> 69954841:type
+	50233565:left -> 77693299:type
+	46555762 [label="{<type> concat | <length> 19 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	103539472 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	94248196 [label="{ <type> leaf | <length> 5 | <value> &#8220; raft&#8221; }"]
+	103539472:left -> 94248196:type
+	38359252 [label="{ <type> leaf | <length> 5 | <value> &#8220; down&#8221; }"]
+	103539472:right -> 38359252:type
+	46555762:left -> 103539472:type
+	124777663 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	124777663:left -> 131910392:type
+	9631888 [label="{ <type> leaf | <length> 5 | <value> &#8220; slow&#8221; }"]
+	124777663:right -> 9631888:type
+	46555762:right -> 124777663:type
+	50233565:right -> 46555762:type
+	34549422:left -> 50233565:type
+	104558674 [label="{<type> concat | <length> 36 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	47796860 [label="{<type> concat | <length> 22 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	71987663 [label="{<type> concat | <length> 12 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	36711548 [label="{ <type> leaf | <length> 6 | <value> &#8220; heavy&#8221; }"]
+	71987663:left -> 36711548:type
+	14643159 [label="{ <type> leaf | <length> 6 | <value> &#8220; river&#8221; }"]
+	71987663:right -> 14643159:type
+	47796860:left -> 71987663:type
+	18164088 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	6374340 [label="{ <type> leaf | <length> 6 | <value> &#8220; Moth;&#8221; }"]
+	18164088:left -> 6374340:type
+	15563217 [label="{ <type> leaf | <length> 4 | <value> &#8220; wet&#8221; }"]
+	18164088:right -> 15563217:type
+	47796860:right -> 18164088:type
+	104558674:left -> 47796860:type
+	103726092 [label="{<type> concat | <length> 14 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	97915092 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	97915092:left -> 45485964:type
+	97915092:right -> 93178158:type
+	103726092:left -> 97915092:type
+	56299935 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	56299935:left -> 113553080:type
+	15698682 [label="{ <type> leaf | <length> 3 | <value> &#8220; in&#8221; }"]
+	56299935:right -> 15698682:type
+	103726092:right -> 56299935:type
+	104558674:right -> 103726092:type
+	34549422:right -> 104558674:type
+	102484515:left -> 34549422:type
+	130092519 [label="{<type> concat | <length> 92 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	129342073 [label="{<type> concat | <length> 53 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	67823840 [label="{<type> concat | <length> 35 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	22946700 [label="{<type> concat | <length> 26 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	57752500 [label="{ <type> leaf | <length> 21 | <value> &#8220; hand‐to‐hand‐combat;&#8221; }"]
+	22946700:left -> 57752500:type
+	22946700:right -> 127306320:type
+	67823840:left -> 22946700:type
+	87956838 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	87956838:left -> 45485964:type
+	38115053 [label="{ <type> leaf | <length> 6 | <value> &#8220; round&#8221; }"]
+	87956838:right -> 38115053:type
+	67823840:right -> 87956838:type
+	129342073:left -> 67823840:type
+	110880131 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	26888381 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	27166757 [label="{ <type> leaf | <length> 5 | <value> &#8220; your&#8221; }"]
+	26888381:left -> 27166757:type
+	645496 [label="{ <type> leaf | <length> 5 | <value> &#8220; head&#8221; }"]
+	26888381:right -> 645496:type
+	110880131:left -> 26888381:type
+	79001090 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	79001090:left -> 130879116:type
+	129827874 [label="{ <type> leaf | <length> 5 | <value> &#8220; ward&#8221; }"]
+	79001090:right -> 129827874:type
+	110880131:right -> 79001090:type
+	129342073:right -> 110880131:type
+	130092519:left -> 129342073:type
+	123768272 [label="{<type> concat | <length> 39 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	22648158 [label="{<type> concat | <length> 21 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	77202835 [label="{<type> concat | <length> 12 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	106622691 [label="{ <type> leaf | <length> 4 | <value> &#8220; off&#8221; }"]
+	77202835:left -> 106622691:type
+	124314959 [label="{ <type> leaf | <length> 8 | <value> &#8220; noxious&#8221; }"]
+	77202835:right -> 124314959:type
+	22648158:left -> 77202835:type
+	73990702 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	14695808 [label="{ <type> leaf | <length> 6 | <value> &#8220; fumes&#8221; }"]
+	73990702:left -> 14695808:type
+	97209670 [label="{ <type> leaf | <length> 3 | <value> &#8220; or&#8221; }"]
+	73990702:right -> 97209670:type
+	22648158:right -> 73990702:type
+	123768272:left -> 22648158:type
+	38149898 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	117426845 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	117426845:left -> 130879116:type
+	29181517 [label="{ <type> leaf | <length> 6 | <value> &#8220; avoid&#8221; }"]
+	117426845:right -> 29181517:type
+	38149898:left -> 117426845:type
+	25253046 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	25253046:left -> 131910392:type
+	37475345 [label="{ <type> leaf | <length> 5 | <value> &#8220; gaze&#8221; }"]
+	25253046:right -> 37475345:type
+	38149898:right -> 25253046:type
+	123768272:right -> 38149898:type
+	130092519:right -> 123768272:type
+	102484515:right -> 130092519:type
+	17660219:right -> 102484515:type
+	20177316:right -> 17660219:type
+	49766452:left -> 20177316:type
+	10919937 [label="{<type> concat | <length> 306 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	69669373 [label="{<type> concat | <length> 171 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	39532166 [label="{<type> concat | <length> 98 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	12303787 [label="{<type> concat | <length> 45 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	55254381 [label="{<type> concat | <length> 27 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	39846197 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	39846197:left -> 126584922:type
+	39846197:right -> 131910392:type
+	55254381:left -> 39846197:type
+	86499238 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	55384853 [label="{ <type> leaf | <length> 9 | <value> &#8220; Ravenous&#8221; }"]
+	86499238:left -> 55384853:type
+	34775453 [label="{ <type> leaf | <length> 11 | <value> &#8220; Bugblatter&#8221; }"]
+	86499238:right -> 34775453:type
+	55254381:right -> 86499238:type
+	12303787:left -> 55254381:type
+	42710379 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	44679026 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	113055535 [label="{ <type> leaf | <length> 6 | <value> &#8220; Beast&#8221; }"]
+	44679026:left -> 113055535:type
+	44679026:right -> 126584922:type
+	42710379:left -> 44679026:type
+	102815066 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	99350366 [label="{ <type> leaf | <length> 6 | <value> &#8220; Traal&#8221; }"]
+	102815066:left -> 99350366:type
+	36338209 [label="{ <type> leaf | <length> 3 | <value> &#8220; (a&#8221; }"]
+	102815066:right -> 36338209:type
+	42710379:right -> 102815066:type
+	12303787:right -> 42710379:type
+	39532166:left -> 12303787:type
+	388594 [label="{<type> concat | <length> 53 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	51123420 [label="{<type> concat | <length> 33 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	22930762 [label="{<type> concat | <length> 22 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	66680702 [label="{ <type> leaf | <length> 15 | <value> &#8220; mindbogglingly&#8221; }"]
+	22930762:left -> 66680702:type
+	56883193 [label="{ <type> leaf | <length> 7 | <value> &#8220; stupid&#8221; }"]
+	22930762:right -> 56883193:type
+	51123420:left -> 22930762:type
+	97104979 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	107639568 [label="{ <type> leaf | <length> 8 | <value> &#8220; animal,&#8221; }"]
+	97104979:left -> 107639568:type
+	97104979:right -> 45485964:type
+	51123420:right -> 97104979:type
+	388594:left -> 51123420:type
+	76556097 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	4026226 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	79434409 [label="{ <type> leaf | <length> 8 | <value> &#8220; assumes&#8221; }"]
+	4026226:left -> 79434409:type
+	3059071 [label="{ <type> leaf | <length> 5 | <value> &#8220; that&#8221; }"]
+	4026226:right -> 3059071:type
+	76556097:left -> 4026226:type
+	16790999 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	55465842 [label="{ <type> leaf | <length> 3 | <value> &#8220; if&#8221; }"]
+	16790999:left -> 55465842:type
+	16790999:right -> 111192482:type
+	76556097:right -> 16790999:type
+	388594:right -> 76556097:type
+	39532166:right -> 388594:type
+	69669373:left -> 39532166:type
+	14468617 [label="{<type> concat | <length> 73 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	81869672 [label="{<type> concat | <length> 33 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	69954856 [label="{<type> concat | <length> 17 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	6790527 [label="{<type> concat | <length> 10 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	4073420 [label="{ <type> leaf | <length> 6 | <value> &#8220; can't&#8221; }"]
+	6790527:left -> 4073420:type
+	131520689 [label="{ <type> leaf | <length> 4 | <value> &#8220; see&#8221; }"]
+	6790527:right -> 131520689:type
+	69954856:left -> 6790527:type
+	122483140 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	72515995 [label="{ <type> leaf | <length> 4 | <value> &#8220; it,&#8221; }"]
+	122483140:left -> 72515995:type
+	122483140:right -> 45485964:type
+	69954856:right -> 122483140:type
+	81869672:left -> 69954856:type
+	74396637 [label="{<type> concat | <length> 16 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	74396637:left -> 6790527:type
+	81532679 [label="{<type> concat | <length> 6 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	81532679:left -> 111192482:type
+	81532679:right -> 8265271:type
+	74396637:right -> 81532679:type
+	81869672:right -> 74396637:type
+	14468617:left -> 81869672:type
+	115788676 [label="{<type> concat | <length> 40 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	54191414 [label="{<type> concat | <length> 16 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	65588913 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	21053311 [label="{ <type> leaf | <length> 5 | <value> &#8220; daft&#8221; }"]
+	65588913:left -> 21053311:type
+	65588913:right -> 29588006:type
+	54191414:left -> 65588913:type
+	77495306 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	77495306:left -> 131930546:type
+	97813848 [label="{ <type> leaf | <length> 6 | <value> &#8220; bush,&#8221; }"]
+	77495306:right -> 97813848:type
+	54191414:right -> 77495306:type
+	115788676:left -> 54191414:type
+	128879915 [label="{<type> concat | <length> 24 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	102800486 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	2410007 [label="{ <type> leaf | <length> 4 | <value> &#8220; but&#8221; }"]
+	102800486:left -> 2410007:type
+	78325204 [label="{ <type> leaf | <length> 5 | <value> &#8220; very&#8221; }"]
+	102800486:right -> 78325204:type
+	128879915:left -> 102800486:type
+	128498082 [label="{<type> concat | <length> 15 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	28281754 [label="{ <type> leaf | <length> 11 | <value> &#8220; ravenous);&#8221; }"]
+	128498082:left -> 28281754:type
+	128498082:right -> 111192482:type
+	128879915:right -> 128498082:type
+	115788676:right -> 128879915:type
+	14468617:right -> 115788676:type
+	69669373:right -> 14468617:type
+	10919937:left -> 69669373:type
+	20527279 [label="{<type> concat | <length> 135 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	83013749 [label="{<type> concat | <length> 88 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	96437776 [label="{<type> concat | <length> 40 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	111739864 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	74266454 [label="{<type> concat | <length> 9 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	74266454:left -> 67299124:type
+	37846876 [label="{ <type> leaf | <length> 5 | <value> &#8220; wave&#8221; }"]
+	74266454:right -> 37846876:type
+	111739864:left -> 74266454:type
+	37986271 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	37986271:left -> 27166757:type
+	118078082 [label="{ <type> leaf | <length> 6 | <value> &#8220; towel&#8221; }"]
+	37986271:right -> 118078082:type
+	111739864:right -> 37986271:type
+	96437776:left -> 111739864:type
+	75611365 [label="{<type> concat | <length> 20 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	104762060 [label="{<type> concat | <length> 15 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	104762060:left -> 15698682:type
+	77090913 [label="{ <type> leaf | <length> 12 | <value> &#8220; emergencies&#8221; }"]
+	104762060:right -> 77090913:type
+	75611365:left -> 104762060:type
+	53426225 [label="{<type> concat | <length> 5 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	53426225:left -> 29588006:type
+	53426225:right -> 131930546:type
+	75611365:right -> 53426225:type
+	96437776:right -> 75611365:type
+	83013749:left -> 96437776:type
+	58785541 [label="{<type> concat | <length> 48 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	29152016 [label="{<type> concat | <length> 24 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	31383740 [label="{<type> concat | <length> 17 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	86539333 [label="{ <type> leaf | <length> 9 | <value> &#8220; distress&#8221; }"]
+	31383740:left -> 86539333:type
+	72825285 [label="{ <type> leaf | <length> 8 | <value> &#8220; signal,&#8221; }"]
+	31383740:right -> 72825285:type
+	29152016:left -> 31383740:type
+	81052617 [label="{<type> concat | <length> 7 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	37225719 [label="{ <type> leaf | <length> 4 | <value> &#8220; and&#8221; }"]
+	81052617:left -> 37225719:type
+	81052617:right -> 126584922:type
+	29152016:right -> 81052617:type
+	58785541:left -> 29152016:type
+	62969646 [label="{<type> concat | <length> 24 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	122854424 [label="{<type> concat | <length> 11 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	29360824 [label="{ <type> leaf | <length> 7 | <value> &#8220; course&#8221; }"]
+	122854424:left -> 29360824:type
+	89231974 [label="{ <type> leaf | <length> 4 | <value> &#8220; dry&#8221; }"]
+	122854424:right -> 89231974:type
+	62969646:left -> 122854424:type
+	29410982 [label="{<type> concat | <length> 13 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	104770370 [label="{ <type> leaf | <length> 9 | <value> &#8220; yourself&#8221; }"]
+	29410982:left -> 104770370:type
+	29410982:right -> 106622691:type
+	62969646:right -> 29410982:type
+	58785541:right -> 62969646:type
+	83013749:right -> 58785541:type
+	20527279:left -> 83013749:type
+	29276362 [label="{<type> concat | <length> 47 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	41788142 [label="{<type> concat | <length> 32 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	57741853 [label="{<type> concat | <length> 14 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	96359968 [label="{<type> concat | <length> 8 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	127451217 [label="{ <type> leaf | <length> 5 | <value> &#8220; with&#8221; }"]
+	96359968:left -> 127451217:type
+	96359968:right -> 45485964:type
+	57741853:left -> 96359968:type
+	54876684 [label="{<type> concat | <length> 6 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	54876684:left -> 55465842:type
+	54876684:right -> 45485964:type
+	57741853:right -> 54876684:type
+	41788142:left -> 57741853:type
+	104076541 [label="{<type> concat | <length> 18 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	41094043 [label="{<type> concat | <length> 12 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	100621610 [label="{ <type> leaf | <length> 6 | <value> &#8220; still&#8221; }"]
+	41094043:left -> 100621610:type
+	26884223 [label="{ <type> leaf | <length> 6 | <value> &#8220; seems&#8221; }"]
+	41094043:right -> 26884223:type
+	104076541:left -> 41094043:type
+	51669842 [label="{<type> concat | <length> 6 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	51669842:left -> 130879116:type
+	102376099 [label="{ <type> leaf | <length> 3 | <value> &#8220; be&#8221; }"]
+	51669842:right -> 102376099:type
+	104076541:right -> 51669842:type
+	41788142:right -> 104076541:type
+	29276362:left -> 41788142:type
+	57960583 [label="{<type> concat | <length> 15 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	79731882 [label="{ <type> leaf | <length> 6 | <value> &#8220; clean&#8221; }"]
+	57960583:left -> 79731882:type
+	4026714 [label="{ <type> leaf | <length> 9 | <value> &#8220; enough.
+&#8221; }"]
+	57960583:right -> 4026714:type
+	29276362:right -> 57960583:type
+	20527279:right -> 29276362:type
+	10919937:right -> 20527279:type
+	49766452:right -> 10919937:type
+	rope [label="rope", shape=oval, style=filled, fillcolor=darkseagreen]
+	rope -> 49766452
+}

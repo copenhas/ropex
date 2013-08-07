@@ -1,0 +1,30 @@
+digraph manipulationsbalanced {
+	node [shape=record]
+	133306715 [label="{<type> concat | <length> 172 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	111726049 [label="{<type> concat | <length> 146 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	32977535 [label="{<type> concat | <length> 41 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	38126929 [label="{ <type> leaf | <length> 30 | <value> &#8220;Have you any idea how much dam&#8221; }"]
+	32977535:left -> 38126929:type
+	93873436 [label="{ <type> leaf | <length> 11 | <value> &#8220;hello world&#8221; }"]
+	32977535:right -> 93873436:type
+	111726049:left -> 32977535:type
+	128716096 [label="{<type> concat | <length> 105 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	99381492 [label="{ <type> leaf | <length> 72 | <value> &#8220;age that bulldozer would suffer if I just let it roll straight over you?&#8221; }"]
+	128716096:left -> 99381492:type
+	74273820 [label="{ <type> leaf | <length> 33 | <value> &#8220;st let it roll straight over you?&#8221; }"]
+	128716096:right -> 74273820:type
+	111726049:right -> 128716096:type
+	133306715:left -> 111726049:type
+	109289501 [label="{<type> concat | <length> 26 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	33626121 [label="{<type> concat | <length> 19 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	46009510 [label="{ <type> leaf | <length> 6 | <value> &#8220;random&#8221; }"]
+	33626121:left -> 46009510:type
+	127958795 [label="{ <type> leaf | <length> 13 | <value> &#8220;text added to&#8221; }"]
+	33626121:right -> 127958795:type
+	109289501:left -> 33626121:type
+	84990334 [label="{ <type> leaf | <length> 7 | <value> &#8220;the end&#8221; }"]
+	109289501:right -> 84990334:type
+	133306715:right -> 109289501:type
+	balanced [label="balanced", shape=oval, style=filled, fillcolor=darkseagreen]
+	balanced -> 133306715
+}

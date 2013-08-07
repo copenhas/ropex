@@ -1,0 +1,39 @@
+digraph manipulations {
+	node [shape=record]
+	94785520 [label="{ <type> leaf | <length> 102 | <value> &#8220;Have you any idea how much damage that bulldozer would suffer if I just let it roll straight over you?&#8221; }"]
+	original [label="original", shape=oval, style=filled, fillcolor=darkseagreen]
+	original -> 94785520
+	47300908 [label="{<type> concat | <length> 113 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	32977535 [label="{<type> concat | <length> 41 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	38126929 [label="{ <type> leaf | <length> 30 | <value> &#8220;Have you any idea how much dam&#8221; }"]
+	32977535:left -> 38126929:type
+	93873436 [label="{ <type> leaf | <length> 11 | <value> &#8220;hello world&#8221; }"]
+	32977535:right -> 93873436:type
+	47300908:left -> 32977535:type
+	99381492 [label="{ <type> leaf | <length> 72 | <value> &#8220;age that bulldozer would suffer if I just let it roll straight over you?&#8221; }"]
+	47300908:right -> 99381492:type
+	insert [label="insert", shape=oval, style=filled, fillcolor=darkseagreen]
+	insert -> 47300908
+	74273820 [label="{ <type> leaf | <length> 33 | <value> &#8220;st let it roll straight over you?&#8221; }"]
+	slice [label="slice", shape=oval, style=filled, fillcolor=darkseagreen]
+	slice -> 74273820
+	92721005 [label="{<type> concat | <length> 146 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	92721005:left -> 47300908:type
+	92721005:right -> 74273820:type
+	concat [label="concat", shape=oval, style=filled, fillcolor=darkseagreen]
+	concat -> 92721005
+	129053427 [label="{<type> concat | <length> 172 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	118184392 [label="{<type> concat | <length> 165 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	53238014 [label="{<type> concat | <length> 152 | { <left> left | <right> right } }", style=filled, fillcolor=gray89]
+	53238014:left -> 92721005:type
+	46009510 [label="{ <type> leaf | <length> 6 | <value> &#8220;random&#8221; }"]
+	53238014:right -> 46009510:type
+	118184392:left -> 53238014:type
+	127958795 [label="{ <type> leaf | <length> 13 | <value> &#8220;text added to&#8221; }"]
+	118184392:right -> 127958795:type
+	129053427:left -> 118184392:type
+	84990334 [label="{ <type> leaf | <length> 7 | <value> &#8220;the end&#8221; }"]
+	129053427:right -> 84990334:type
+	multiconcat [label="multiconcat", shape=oval, style=filled, fillcolor=darkseagreen]
+	multiconcat -> 129053427
+}
