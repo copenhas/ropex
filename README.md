@@ -14,18 +14,22 @@ the leaves together, while the leaves actually contain the text.
 
 
 Worst case purely concatenation rope:
-![Worst case](https://raw.github.com/copenhas/ropex/master/graphs/bulldozer.dot.png "worst case")
+
+![Worst case](http://copenhas.github.io/ropex/images/bulldozer.dot.png "worst case")
 
 
 The same rope rebalanced for better slice based operations:
-![Worst case rebalanced](https://raw.github.com/copenhas/ropex/master/graphs/bulldozerrebalanced.dot.png "worst case rebalanced")
+
+![Worst case rebalanced](http://copenhas.github.io/ropex/images/bulldozerrebalanced.dot.png "worst case rebalanced")
 
 
 Also existing leafs should be reused in new ropes. The operations performed where creating a new rope (original), 
 inserting 'hello world' (insert), a subrope sliced out (slice), then concatenated back in (concat), then finally
 a series of concatenations (multiconcat).
-![Rope with manipulations](https://raw.github.com/copenhas/ropex/master/graphs/manipulations.dot.png "Rope with manipulation")
+
+![Rope with manipulations](http://copenhas.github.io/ropex/images/manipulations.dot.png "Rope with manipulation")
 
 
 That same rope rebalanced:
-![Rope with manipulations rebalanced](https://raw.github.com/copenhas/ropex/master/graphs/manipulationsbalanced.dot.png "Rope with manipulation rebalanced")
+
+![Rope with manipulations rebalanced](http://copenhas.github.io/ropex/images/manipulationsbalanced.dot.png "Rope with manipulation rebalanced")

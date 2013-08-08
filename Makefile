@@ -13,7 +13,7 @@ perf:
 tags:
 	ctags -R .
 
-graph:
+graph: 
 	rm -f graphs/*
 	elixir -pa ebin test/graphs.exs
 	ls graphs/*.dot | xargs -L 1 dot -Tpng -O
@@ -22,5 +22,9 @@ graph:
 check:
 	dialyzer ./ebin --fullpath --no_check_plt -Wno_return
 
-docs:
+docs: docs/images
 	mix docs --readme
+	cp graphs/*.png docs/images/
+
+docs/images:
+	mkdir docs/images
