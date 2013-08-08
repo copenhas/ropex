@@ -6,3 +6,4 @@ erl_crash.dump
 docs
 tags
 .DS_Store
+*.dot
