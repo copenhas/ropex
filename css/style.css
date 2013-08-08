@@ -19,6 +19,8 @@ h2 {
 
 .clear { clear: both; }
 
+img { max-width: 650px; }
+
 li.r1 { background: #f0f0f0; }
 li.r2 { background: #fafafa; }
 
