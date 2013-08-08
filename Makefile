@@ -16,6 +16,7 @@ tags:
 graph:
 	rm -f graphs/*
 	elixir -pa ebin test/graphs.exs
+	ls graphs/*.dot | xargs -L 1 dot -Tpng -O
 	ls graphs/*.dot | xargs -L 1 dot -Tsvg -O
 
 check:

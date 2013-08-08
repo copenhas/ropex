@@ -8,20 +8,11 @@ defmodule GraphVizTest do
   @longtext File.read!("test/fixtures/towels.txt")
 
   test "write graph" do
-    rope = @simple |> build_rope
-    write_dot_file "simple", rope
-
     rope = @text |> build_rope
     write_dot_file "bulldozer", rope
 
     rope = Rope.rebalance rope
     write_dot_file "bulldozerrebalanced", rope
-
-    rope = @longtext |> build_rope
-    write_dot_file "towels", rope
-
-    rope = Rope.rebalance rope
-    write_dot_file "towelsrebalanced", rope
   end
 
   test "graph rope manipulations" do
