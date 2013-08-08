@@ -197,6 +197,14 @@ defmodule RopeTest do
     is_equal Rope.insert_at(orig, 2, "SPLIT"), "BeSPLITware of the Leopard"
   end
 
+  test "remove_at allows removing a substr of the rope" do
+    orig = build_rope "Beware of the Leopard"
+
+    is_equal Rope.remove_at(orig, 63, 10), "Beware of the Leopard"
+    is_equal Rope.remove_at(orig, -7, 3), "Beware of the pard"
+    is_equal Rope.remove_at(orig, 2, 5), "Beof the Leopard"
+  end
+
   defp build_rope(text) do
     words = text
       |> String.split(" ")

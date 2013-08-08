@@ -277,6 +277,35 @@ defmodule Rope do
   end
 
   @doc """
+  Produces a new rope with the substr defined by the starting index and the length of 
+  characters removed. The advantage of this is it takes full advantage of ropes 
+  being optimized for index based operation.
+
+  ## Examples
+
+      iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), 19, 3) |> Rope.to_binary
+      "infinite number of keys"
+
+      iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), -7, 3) |> Rope.to_binary
+      "infinite number of keys"
+  """
+  @spec remove_at(rope, integer, non_neg_integer) :: rope
+  def remove_at(nil, _index, _len) do
+    nil
+  end
+
+  def remove_at(rope, index, len) do
+    if index < 0 do
+      index = rope.length + index
+    end
+
+    left = slice(rope, 0, index)
+    right = slice(rope, index + len, rope.length)
+
+    concat(left, right)
+  end
+
+  @doc """
   Returns the index of the first match or -1 if no match was found.
 
   ## Examples
@@ -468,7 +497,7 @@ defmodule Rope do
     A count of the leaf nodes in the rope. This current traverses the rope to count them.
     """
     def count(rope) do
-      Rope.reduce_leaves(rope, 0, fn(leaf, acc) -> acc + 1 end)
+      Rope.reduce_leaves(rope, 0, fn(_leaf, acc) -> acc + 1 end)
     end
 
     @doc """
@@ -507,14 +536,12 @@ defmodule Rope do
     fun.(leaf, acc)
   end
 
-  def reduce_leaves(nil, acc, fun) do
+  def reduce_leaves(nil, acc, _fun) do
     acc
   end
 
 
   defimpl Inspect, for: Rope do
-    import Inspect.Algebra
-
     @doc """
     Traveres the leaf nodes and converts the chunks of binary data into a single
     algebra document. Will convert '\n' characters into algebra document line breaks.
