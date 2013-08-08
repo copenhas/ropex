@@ -22,12 +22,31 @@
     <div id="content">
       <h1>Rope</h1>
 
-<p>Implementing the rope data structure to play around with Elixir some... and to do something kind of computer sciencey again.</p>
+<p>Implemention of a rope data structure in Elixir. It provides faster index based operations, especially at scale, 
+then plain binary based strings. One of the basic building block of this is the <code>slice/3</code> operation which is roughly 3x 
+faster at 2kb of text and up to 50x faster at 880kb of text. The other is <code>concat/2</code> operation which runs in constant time
+but as it stands so does the BEAM (how about that). <code>concat/2</code> does suffer roughly double the overhead of the <code>&lt;&gt;</code> operator
+on plain binary based strings. The combination of <code>slice/3</code> and <code>concat/2</code> allows efficient <code>insert_at/3</code> and <code>remove_at/3</code>.</p>
 
-<p>Currently, concat is constant time but about twice the overhead of plain binary strings. 
-While slice is WAY more efficient then plain binary strings. About 3 times faster in small files (tested with 2kb) and up to 50 times faster in huge files (tested with 880kb).</p>
+<h2>So what does this look like?</h2>
 
-<p>Find is just horrible right now, which limits some of the rope&#39;s use. </p>
+<p>The following images where genereated with <a href="http://graphviz.org">GraphViz</a>. The green oval represent the variables who point
+to a rope. The squares represent the internal record data structure for the rope. &#39;concat&#39; nodes are purely for connecting
+the leaves together, while the leaves actually contain the text.</p>
+
+<p>Worst case purely concatenation rope:
+<img src="https://raw.github.com/copenhas/ropex/master/graphs/bulldozer.dot.png" alt="Worst case" title="worst case"></p>
+
+<p>The same rope rebalanced for better slice based operations:
+<img src="https://raw.github.com/copenhas/ropex/master/graphs/bulldozerrebalanced.dot.png" alt="Worst case rebalanced" title="worst case rebalanced"></p>
+
+<p>Also existing leafs should be reused in new ropes. The operations performed where creating a new rope (original), 
+inserting &#39;hello world&#39; (insert), a subrope sliced out (slice), then concatenated back in (concat), then finally
+a series of concatenations (multiconcat).
+<img src="https://raw.github.com/copenhas/ropex/master/graphs/manipulations.dot.png" alt="Rope with manipulations" title="Rope with manipulation"></p>
+
+<p>That same rope rebalanced:
+<img src="https://raw.github.com/copenhas/ropex/master/graphs/manipulationsbalanced.dot.png" alt="Rope with manipulations rebalanced" title="Rope with manipulation rebalanced"></p>
 
     </div>
   </body>

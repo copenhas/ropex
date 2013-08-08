@@ -129,6 +129,11 @@ String module compatible API.</p>
 </li>
 <li>
   <span class="summary_signature">
+    <a href="#remove_at/3">remove_at/3</a>
+  </span>
+</li>
+<li>
+  <span class="summary_signature">
     <a href="#replace/4">replace/4</a>
   </span>
 </li>
@@ -231,7 +236,7 @@ iex&gt; Rope.find(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L291" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L320" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -252,7 +257,7 @@ iex&gt; Rope.find_all(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&q
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L329" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L358" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -321,6 +326,27 @@ a fully balanced rope.</p>
   
 </div>
 <div class="detail">
+  <p class="signature" id="remove_at/3">
+    <strong>remove_at(rope, index, len)</strong>
+  </p>
+  <div class="docstring"><p>Produces a new rope with the substr defined by the starting index and the length of 
+characters removed. The advantage of this is it takes full advantage of ropes 
+being optimized for index based operation.</p>
+
+<h2>Examples</h2>
+
+<pre><code>iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot;, &quot;monkeys&quot;]), 19, 3) |&gt; Rope.to_binary
+&quot;infinite number of keys&quot;
+
+iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot;, &quot;monkeys&quot;]), -7, 3) |&gt; Rope.to_binary
+&quot;infinite number of keys&quot;
+</code></pre>
+</div>
+  
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L293" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
   <p class="signature" id="replace/4">
     <strong>replace(rope, pattern, replacement, opts // [])</strong>
   </p>
@@ -330,7 +356,7 @@ By default, it replaces all entries, except if the global option
 is set to false.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L340" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L369" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -353,7 +379,7 @@ the second. If the offset is greater than string length, than it returns nil.</p
   <div class="docstring"><p>Converts the entire rope to a single binary.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L354" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L383" target="_blank" class="view_source">Source</a>
   
 </div>
 
