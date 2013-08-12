@@ -17,58 +17,70 @@ defmodule PerformanceTest do
   end
 
   test "small rope performance" do
+    rope = build_rope
+    IO.puts "\nSMALL ROPE: length #{Rope.length(rope)}"
+
     threshold = 3
-    avg = build_rope |> build_ctxt |> run(1_000, :concat)
+    avg = rope |> build_ctxt |> run(1_000, :concat)
     IO.puts "\nSMALL ROPE: concat takes #{avg} microseconds"
     assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
     threshold = 1_700 
-    avg = build_rope |> build_ctxt |> run(10, :slice)
+    avg = rope |> build_ctxt |> run(10, :slice)
     IO.puts "\nSMALL ROPE: slice takes #{avg} microseconds"
     assert avg < threshold, "slices on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
     threshold = 50_000
-    avg = build_rope |> build_ctxt |> run(10, :find)
+    avg = rope |> build_ctxt |> run(10, :find)
     IO.puts "\nSMALL ROPE: find takes #{avg} microseconds"
     assert avg < threshold, "finds on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
   test "huge rope performance" do
+    rope = build_huge_rope
+    IO.puts "\nHUGE ROPE: length #{Rope.length(rope)}"
+
     threshold = 3
-    avg = build_huge_rope |> build_ctxt |> run(1_000, :concat)
+    avg = rope |> build_ctxt |> run(1_000, :concat)
     IO.puts "\nHUGE ROPE: concat takes #{avg} microseconds"
     assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
     threshold = 4_000 
-    avg = build_huge_rope |> build_ctxt |> run(10, :slice)
+    avg = rope |> build_ctxt |> run(10, :slice)
     IO.puts "\nHUGE ROPE: slice takes #{avg} microseconds"
     assert avg < threshold, "slice on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
     threshold = 50_000
-    avg = build_huge_rope |> build_ctxt |> run(3, :find)
+    avg = rope |> build_ctxt |> run(3, :find)
     IO.puts "\nHUGE ROPE: find takes #{avg} microseconds"
     assert avg < threshold, "find on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
   test "small string performance" do
-    time = build_text |> build_ctxt |> run(1_000, :concat)
+    text = build_text
+    IO.puts "\nSMALL STRING: length #{String.length(text)}"
+
+    time = text |> build_ctxt |> run(1_000, :concat)
     IO.puts "\nSMALL STRING: concat takes #{time} microseconds"
 
-    time = build_text |> build_ctxt |> run(10, :slice)
+    time = text |> build_ctxt |> run(10, :slice)
     IO.puts "\nSMALL STRING: slice takes #{time} microseconds"
 
-    time = build_text |> build_ctxt |> run(10, :find)
+    time = text |> build_ctxt |> run(10, :find)
     IO.puts "\nSMALL STRING: contains? takes #{time} microseconds"
   end
 
   test "huge string performance" do
-    time = build_huge_text |> build_ctxt |> run(1000, :concat)
+    text = build_huge_text
+    IO.puts "\nHUGE STRING: length #{String.length(text)}"
+
+    time = text |> build_ctxt |> run(1000, :concat)
     IO.puts "\nHUGE STRING: concat takes #{time} microseconds"
 
-    time = build_huge_text |> build_ctxt |> run(10, :slice)
+    time = text |> build_ctxt |> run(5, :slice)
     IO.puts "\nHUGE STRING: slice takes #{time} microseconds"
 
-    time = build_huge_text |> build_ctxt |> run(10, :find)
+    time = text |> build_ctxt |> run(10, :find)
     IO.puts "\nHUGE STRING: contains? takes #{time} microseconds"
   end
 
@@ -84,8 +96,12 @@ defmodule PerformanceTest do
   end
 
   def build_huge_rope do
-    File.stream!("test/fixtures/dracula.txt")
-      |> Enum.reduce("", fn(line, rope) -> Rope.concat(rope, line) end)
+    text = File.read!("test/fixtures/dracula.txt")
+
+    #gotta preserve the newlines
+    [first | rest] = String.split(text, "\n")
+    rest
+      |> Enum.reduce(first, fn(line, rope) -> Rope.concat(rope, "\n" <> line) end)
       |> Rope.rebalance
   end
 
@@ -114,7 +130,7 @@ defmodule PerformanceTest do
   end
 
   def run(ctxt, num, op) do
-    finished = Enum.reduce(1..num, ctxt, fn(_count, TestCtxt[rope: rope] = ctxt) ->
+    finished = Enum.reduce(1..num, ctxt, fn(_count, ctxt) ->
       operation = {op, generate_args(op, ctxt)}
       time_operation(operation, ctxt)
     end)
@@ -148,7 +164,7 @@ defmodule PerformanceTest do
     end
   end
 
-  def generate_args(opt, _ctxt) do
+  def generate_args(_opt, _ctxt) do
      []
   end
 
