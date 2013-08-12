@@ -36,6 +36,11 @@ defmodule Rope do
   """
 
 
+  @partition_size_threshold 1000
+  @partition_term_ratio 0.1
+  @partition_depth_limit 3
+
+
   defrecordp :rnode, Rope,
     length: 0 :: non_neg_integer,
     depth: 1 :: non_neg_integer,
@@ -385,6 +390,35 @@ defmodule Rope do
       |> Enum.reverse
   end
 
+
+  def pfind_all(rope, term) do
+    termLength = String.length(term)
+    segments = partition_rope(0, rope, termLength, 0)
+    parent = self()
+
+    segments
+      |> Enum.map(fn({offset, length}) ->
+          slice = Rope.slice(rope, offset, length)
+          ref = make_ref
+
+          spawn_link(fn() ->
+            matches = Rope.find_all(slice, term)
+              |> Enum.map(fn(match) -> match + offset end)
+
+            parent <- {ref, :pfind, self(), matches}
+          end)
+        end)
+      |> Enum.map(fn(child) ->
+          receive do
+            {ref, :pfind, child, matches} ->
+              matches
+          end
+        end)
+      |> List.flatten
+      |> Enum.uniq
+      |> Enum.sort
+  end
+
   @doc """
   Replaces the first match with the replacement text and returns
   the new rope. If not found then the existing rope is returned.
@@ -452,6 +486,30 @@ defmodule Rope do
         possibles
       end
     end)
+  end
+
+  defp partition_rope(offset, rleaf() = leaf, termLength, _depth) do
+    [{offset, Rope.length(leaf) + termLength}]
+  end
+
+  defp partition_rope(offset, rnode(right: right, left: left) = node, termLength, depth) do
+    if offset > termLength do
+      offset = offset - termLength
+    end
+
+    cond do
+      depth >= @partition_depth_limit ->
+        [{offset, offset + Rope.length(node) + termLength}]
+      Rope.length(left) <= @partition_size_threshold or Rope.length(right) <= @partition_size_threshold ->
+        [{offset, offset + Rope.length(node) + termLength}]
+      (termLength / Rope.length(left)) > @partition_term_ratio or (termLength / Rope.length(right)) > @partition_term_ratio ->
+        [{offset, offset + Rope.length(node) + termLength}]
+      true ->
+        leftSegments = partition_rope(offset, left, termLength, depth + 1)
+        rightSegments = partition_rope(offset + Rope.length(left), right, termLength, depth + 1)
+
+        leftSegments ++ rightSegments
+    end
   end
 
   defp do_replace(rope, pattern, replacement) do
