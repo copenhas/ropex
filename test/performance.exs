@@ -17,56 +17,59 @@ defmodule PerformanceTest do
   end
 
   test "small rope performance" do
-    threshold = 3_000 #3 milliseconds
-    time = build_rope |> build_ctxt |> run(1_000, :concat)
-    IO.puts "\nSMALL ROPE: 1,000 concats took #{time} microseconds"
-    assert time < threshold, "1,000 concats completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+    threshold = 3
+    avg = build_rope |> build_ctxt |> run(1_000, :concat)
+    IO.puts "\nSMALL ROPE: concat takes #{avg} microseconds"
+    assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
-    threshold = 17_000 #100 milliseconds
-    time = build_rope |> build_ctxt |> run(10, :slice)
-    IO.puts "\nSMALL ROPE: 10 slice took #{time} microseconds"
-    assert time < threshold, "10 slices on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+    threshold = 1_700 
+    avg = build_rope |> build_ctxt |> run(10, :slice)
+    IO.puts "\nSMALL ROPE: slice takes #{avg} microseconds"
+    assert avg < threshold, "slices on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
-    threshold = 1_000
-    time = build_rope |> build_ctxt |> run(10, :find)
-    IO.puts "\nSMALL ROPE: 10 find took #{time} microseconds"
-    assert time < threshold, "10 finds on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+    threshold = 50_000
+    avg = build_rope |> build_ctxt |> run(10, :find)
+    IO.puts "\nSMALL ROPE: find takes #{avg} microseconds"
+    assert avg < threshold, "finds on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
   test "huge rope performance" do
-    threshold = 3_000 #3 milliseconds
-    time = build_huge_rope |> build_ctxt |> run(1_000, :concat)
-    IO.puts "\nHUGE ROPE: 1,000 concats took #{time} microseconds"
-    assert time < threshold, "1,000 concats completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+    threshold = 3
+    avg = build_huge_rope |> build_ctxt |> run(1_000, :concat)
+    IO.puts "\nHUGE ROPE: concat takes #{avg} microseconds"
+    assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
-    threshold = 40_000 #40 milliseconds
-    time = build_huge_rope |> build_ctxt |> run(10, :slice)
-    IO.puts "\nHUGE ROPE: 10 slice took #{time} microseconds"
-    assert time < threshold, "10 slices on a balanced rope completed in #{time} microseconds, longer then threshold of #{threshold} microseconds"
+    threshold = 4_000 
+    avg = build_huge_rope |> build_ctxt |> run(10, :slice)
+    IO.puts "\nHUGE ROPE: slice takes #{avg} microseconds"
+    assert avg < threshold, "slice on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
-    IO.puts "\nHUGE ROPE: 10 find took nevermind microseconds"
+    threshold = 50_000
+    avg = build_huge_rope |> build_ctxt |> run(3, :find)
+    IO.puts "\nHUGE ROPE: find takes #{avg} microseconds"
+    assert avg < threshold, "find on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
   end
 
   test "small string performance" do
     time = build_text |> build_ctxt |> run(1_000, :concat)
-    IO.puts "\nSMALL STRING: 1,000 concats took #{time} microseconds"
+    IO.puts "\nSMALL STRING: concat takes #{time} microseconds"
 
     time = build_text |> build_ctxt |> run(10, :slice)
-    IO.puts "\nSMALL STRING: 10 slices took #{time} microseconds"
+    IO.puts "\nSMALL STRING: slice takes #{time} microseconds"
 
     time = build_text |> build_ctxt |> run(10, :find)
-    IO.puts "\nSMALL STRING: 10 contains? took #{time} microseconds"
+    IO.puts "\nSMALL STRING: contains? takes #{time} microseconds"
   end
 
   test "huge string performance" do
     time = build_huge_text |> build_ctxt |> run(1000, :concat)
-    IO.puts "\nHUGE STRING: 1,000 concats took #{time} microseconds"
+    IO.puts "\nHUGE STRING: concat takes #{time} microseconds"
 
     time = build_huge_text |> build_ctxt |> run(10, :slice)
-    IO.puts "\nHUGE STRING: 10 slices took #{time} microseconds"
+    IO.puts "\nHUGE STRING: slice takes #{time} microseconds"
 
     time = build_huge_text |> build_ctxt |> run(10, :find)
-    IO.puts "\nHUGE STRING: 10 contains? took #{time} microseconds"
+    IO.puts "\nHUGE STRING: contains? takes #{time} microseconds"
   end
 
 
@@ -116,7 +119,7 @@ defmodule PerformanceTest do
       time_operation(operation, ctxt)
     end)
 
-    finished.time
+    finished.time / num
   end
 
   def generate_args(:slice, TestCtxt[rope: rope]) 
