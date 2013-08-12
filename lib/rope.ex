@@ -321,23 +321,36 @@ defmodule Rope do
     -1
   end
 
+  defrecordp :findctxt,
+    findIndex: 0, #where the match started in the rope
+    termIndex: 0 #next index to try
+
   def find(rope, term) do
     termLen = String.length(term)
 
-    matchIndex = do_reduce_while(0..rope.length, 0,
-      fn(_index, matchIndex) ->
-        subrope = Rope.slice(rope, matchIndex, termLen)
-        Kernel.inspect(subrope) != term
+    foundMatch = fn(findctxt(termIndex: i)) -> i == termLen end
+
+    {_offset, possibles} = do_reduce_while(rope, { 0, []},
+      fn(leaf, {_offset, possibles}) ->
+        # it wil continue so long as we retruen true
+        # we want to stop when we have a match
+        not Enum.any?(possibles, foundMatch)
       end,
-      fn(index, _matchIndex) ->
-        index
+      fn(rleaf(length: len, value: chunk), {offset, possibles}) ->
+        {offset + len, build_possible_matches(offset, chunk, term, possibles)}
       end
     )
 
-    if matchIndex == rope.length and termLen > 1 do
+    match = possibles
+      |> Enum.filter(foundMatch)
+      |> Enum.map(fn(findctxt(findIndex: i)) -> i end)
+      |> Enum.reverse
+      |> Enum.first
+
+    if match == nil do
       -1
     else
-      matchIndex
+      match
     end
   end
 
@@ -356,7 +369,20 @@ defmodule Rope do
   """
   @spec find_all(rope, str) :: list(non_neg_integer)
   def find_all(rope, term) do
-    do_find_all(rope, term, []) |> Enum.reverse
+    termLen = String.length(term)
+
+    foundMatch = fn(findctxt(termIndex: i)) -> i == termLen end
+
+    {_offset, possibles} = Enum.reduce(rope, { 0, []},
+      fn(rleaf(length: len, value: chunk), {offset, possibles}) ->
+        {offset + len, build_possible_matches(offset, chunk, term, possibles)}
+      end
+    )
+
+    match = possibles
+      |> Enum.filter(foundMatch)
+      |> Enum.map(fn(findctxt(findIndex: i)) -> i end)
+      |> Enum.reverse
   end
 
   @doc """
@@ -397,20 +423,35 @@ defmodule Rope do
     end
   end
 
-  defp do_find_all(rope, term, matches) do
-    termLen = String.length term
+  defp build_possible_matches(offset, chunk, term, possibles) do
+    chunkLength = String.length(chunk)
+    termLength = String.length(term)
 
-    offset = case matches do
-      [] -> 0
-      [last | _ ] -> last + termLen 
-    end
+    Enum.reduce(0..(chunkLength - 1), possibles, fn(chunkIndex, possibles) ->
+      #filter out bad matches
+      possibles = Enum.map(possibles, fn(possible) ->
+        findctxt(findIndex: findIndex, termIndex: termIndex) = possible
 
-    case find(rope, term) do
-      -1 -> matches
-      match when match >= 0 ->
-        rightOvers = Rope.slice(rope, match + termLen, rope.length)
-        do_find_all(rightOvers, term, [match + offset | matches])
-    end
+        cond do
+          termIndex == termLength ->
+            #already matched don't change it
+            possible
+          String.at(chunk, chunkIndex) == String.at(term, termIndex) ->
+            findctxt(findIndex: findIndex, termIndex: termIndex + 1)
+          true ->
+            #no match toss this one out
+            nil
+        end
+      end)
+      |> Enum.filter(fn(possible) -> possible != nil end)
+
+      #add new possible match
+      if String.at(chunk, chunkIndex) == String.at(term, 0) do
+        [findctxt(findIndex: offset + chunkIndex, termIndex: 1) | possibles]
+      else
+        possibles
+      end
+    end)
   end
 
   defp do_replace(rope, pattern, replacement) do
