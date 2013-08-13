@@ -84,7 +84,7 @@ String module compatible API.</p>
         <ul class="summary">
           <li>
   <span class="summary_signature">
-    <a href="#concat/1">concat/1</a>
+    <a href="#balanced?/1">balanced?/1</a>
   </span>
 </li>
 <li>
@@ -159,10 +159,23 @@ String module compatible API.</p>
         <div id="functions_details" class="details_list">
           <h2>Functions</h2>
           <div class="detail">
-  <p class="signature" id="concat/1">
-    <strong>concat(list1)</strong>
+  <p class="signature" id="balanced?/1">
+    <strong>balanced?(rope)</strong>
   </p>
-  <div class="docstring"><p>Concatenates the list of ropes or strings together into a single new rope. </p>
+  <div class="docstring"><p>Checks if the rope is considered balanced based on comparing total length
+and depth verses the fibanocci sequence.</p>
+</div>
+  
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L164" target="_blank" class="view_source">Source</a>
+  
+</div>
+<div class="detail">
+  <p class="signature" id="concat/2">
+    <strong>concat(list1, opts // [])</strong>
+  </p>
+  <div class="docstring"><p>Concatenates the list of ropes or strings together into a single new rope.
+Accepts ropes or strings as arguments. Additionally you can override the
+auto-rebalancing behavior with a <code>rebalance: false</code> option.</p>
 
 <h2>Examples</h2>
 
@@ -174,27 +187,7 @@ iex&gt; Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&quot;, &quot
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L128" target="_blank" class="view_source">Source</a>
-  
-</div>
-<div class="detail">
-  <p class="signature" id="concat/2">
-    <strong>concat(rope, rope)</strong>
-  </p>
-  <div class="docstring"><p>Concatenates two ropes together producing a new single rope. Accepts
-ropes or strings as arguments.</p>
-
-<h2>Examples</h2>
-
-<pre><code>iex&gt; Rope.concat(&quot;Time is&quot;, &quot; an illusion.&quot;) |&gt; Rope.to_binary
-&quot;Time is an illusion.&quot;
-
-iex&gt; Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;) |&gt; Rope.to_binary
-&quot;terrible ghastly silence&quot;
-</code></pre>
-</div>
-  
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L89" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L95" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -209,7 +202,7 @@ rebalance.</p>
 
 <h2>Examples</h2>
 
-<pre><code>iex&gt; Rope.depth(Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;))
+<pre><code>iex&gt; Rope.depth(Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;]))
 1
 
 iex&gt; Rope.depth(Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&quot;, &quot; silence&quot;]))
@@ -217,7 +210,7 @@ iex&gt; Rope.depth(Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&q
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L243" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L227" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -236,7 +229,7 @@ iex&gt; Rope.find(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L320" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L304" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -257,7 +250,7 @@ iex&gt; Rope.find_all(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&q
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L358" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L355" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -277,7 +270,7 @@ iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, 
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L264" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L248" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -288,12 +281,12 @@ iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, 
 
 <h2>Examples</h2>
 
-<pre><code>iex&gt; Rope.length(Rope.concat(Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;))
+<pre><code>iex&gt; Rope.length(Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly silence&quot;]))
 24
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L218" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L202" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -301,7 +294,7 @@ iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, 
     <strong>new(str)</strong>
   </p>
   <div class="docstring"><p>Creates a new rope with the string provided. Not needed since
-concat/2 supports strings and ropes as arguments.</p>
+<a href="#concat/2"><code>concat/2</code></a> supports strings and ropes as arguments.</p>
 
 <h2>Examples</h2>
 
@@ -310,7 +303,7 @@ concat/2 supports strings and ropes as arguments.</p>
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L68" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L73" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -322,7 +315,7 @@ efficient. This is a pretty greedy rebalancing and should produce
 a fully balanced rope.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L197" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L181" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -343,7 +336,7 @@ iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L293" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L277" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -356,7 +349,7 @@ By default, it replaces all entries, except if the global option
 is set to false.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L369" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L390" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -369,7 +362,7 @@ the second. If the offset is greater than string length, than it returns nil.</p
 <p>Similar to String.slice/3, check the tests for some examples of usage.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L143" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L111" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
@@ -379,7 +372,7 @@ the second. If the offset is greater than string length, than it returns nil.</p
   <div class="docstring"><p>Converts the entire rope to a single binary.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L383" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L404" target="_blank" class="view_source">Source</a>
   
 </div>
 

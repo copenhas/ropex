@@ -34,11 +34,11 @@ on plain binary based strings. The combination of <code>slice/3</code> and <code
 to a rope. The squares represent the internal record data structure for the rope. &#39;concat&#39; nodes are purely for connecting
 the leaves together, while the leaves actually contain the text.</p>
 
-<p>Worst case purely concatenation rope:</p>
+<p>Straight concatenation with an auto-rebalance triggered part way:</p>
 
 <p><img src="http://copenhas.github.io/ropex/images/bulldozer.dot.png" alt="Worst case" title="worst case"></p>
 
-<p>The same rope rebalanced for better slice based operations:</p>
+<p>The same rope explicitly rebalanced for better slice based operations:</p>
 
 <p><img src="http://copenhas.github.io/ropex/images/bulldozerrebalanced.dot.png" alt="Worst case rebalanced" title="worst case rebalanced"></p>
 
