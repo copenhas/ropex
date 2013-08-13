@@ -44,15 +44,15 @@ defmodule Rope do
   defrecordp :rnode, Rope,
     length: 0 :: non_neg_integer,
     depth: 1 :: non_neg_integer,
-    left: nil :: Rope,
-    right: nil :: Rope
+    left: nil :: rope,
+    right: nil :: rope
 
   defrecordp :rleaf, Rope,
     length: 0 :: non_neg_integer,
     depth: 0 :: non_neg_integer,
     value: nil :: binary
 
-  @type rope :: Rope | nil
+  @type rope :: rnode_t | rleaf_t | nil
 
   # copied the type defs from the String module
   @type str :: binary
@@ -594,8 +594,10 @@ defmodule Rope do
     rebuild_rope([], subropes)
   end
 
-  defp fib(0), do: 1
-  defp fib(1), do: 1
+  defp fib(n) when n <= 1 do
+    1
+  end
+
   defp fib(n) do
     do_fib(n, [1, 1])
   end

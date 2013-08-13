@@ -19,7 +19,7 @@ defmodule GraphVizTest do
     rope = Rope.new(@text) 
     inserted = Rope.insert_at(rope, 30, @simple)
     slice = Rope.slice(inserted, 80, rope.length)
-    concat1 = Rope.concat(inserted, slice)
+    concat1 = Rope.concat([inserted, slice])
     concat2 = Rope.concat([concat1, "random", "text added to", "the end"])
     balanced = Rope.rebalance concat2 
 
@@ -44,7 +44,7 @@ defmodule GraphVizTest do
 
     words
       |> Enum.drop(1)
-      |> Enum.reduce(Rope.new(first), fn (word, rope) -> Rope.concat(rope, " " <> word) end)
+      |> Enum.reduce(Rope.new(first), fn (word, rope) -> Rope.concat([rope, " " <> word]) end)
   end
 
   defp write_dot_file(name, rope)

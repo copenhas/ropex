@@ -21,8 +21,8 @@ defmodule PerformanceTest do
     IO.puts "\nSMALL ROPE: length #{Rope.length(rope)}"
 
     threshold = 3
-    avg = rope |> build_ctxt |> run(1_000, :concat)
-    IO.puts "\nSMALL ROPE: concat takes #{avg} microseconds"
+    avg = rope |> build_ctxt |> run(1_000, :concat_no_rebalance)
+    IO.puts "\nSMALL ROPE: concat without rebalance takes #{avg} microseconds"
     assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
     threshold = 1_700 
@@ -41,8 +41,8 @@ defmodule PerformanceTest do
     IO.puts "\nHUGE ROPE: length #{Rope.length(rope)}"
 
     threshold = 3
-    avg = rope |> build_ctxt |> run(1_000, :concat)
-    IO.puts "\nHUGE ROPE: concat takes #{avg} microseconds"
+    avg = rope |> build_ctxt |> run(1_000, :concat_no_rebalance)
+    IO.puts "\nHUGE ROPE: concat with no rebalance takes #{avg} microseconds"
     assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
     threshold = 4_000 
@@ -91,7 +91,7 @@ defmodule PerformanceTest do
 
   def build_rope do
     File.stream!("test/fixtures/hello_ground.txt")
-      |> Enum.reduce("", fn(line, rope) -> Rope.concat(rope, line) end)
+      |> Enum.reduce("", fn(line, rope) -> Rope.concat([rope, line], rebalance: false) end)
       |> Rope.rebalance
   end
 
@@ -101,14 +101,16 @@ defmodule PerformanceTest do
     #gotta preserve the newlines
     [first | rest] = String.split(text, "\n")
     rest
-      |> Enum.reduce(first, fn(line, rope) -> Rope.concat(rope, "\n" <> line) end)
+      |> Enum.reduce(first, fn(line, rope) -> 
+          Rope.concat([rope, "\n" <> line], rebalance: false)
+         end)
       |> Rope.rebalance
   end
 
   def build_long_rope() do
     extra = build_extra
     Enum.reduce(1..100_000, "", fn(_count, left) ->
-      Rope.concat([left | Enum.take(extra, 1)])
+      Rope.concat([left | Enum.take(extra, 1)], rebalance: false)
     end)
   end
 
@@ -153,6 +155,11 @@ defmodule PerformanceTest do
     w
   end
 
+  def generate_args(:concat_no_rebalance, TestCtxt[extra: extra]) do
+    [w] = Enum.take(extra, 1)
+    w
+  end
+
   def generate_args(:find, _ctxt) do
     case :random.uniform(6) do
       1 -> "my"
@@ -190,6 +197,12 @@ defmodule PerformanceTest do
     newRope = Rope.concat([rope | [word]])
     ctxt.rope newRope
   end
+
+  def execute_operation({:concat_no_rebalance, word}, TestCtxt[rope: rope] = ctxt) 
+  when is_record(rope, Rope) do
+    newRope = Rope.concat([rope, word], rebalance: false)
+    ctxt.rope newRope
+end
 
   def execute_operation({:find, term}, TestCtxt[rope: rope] = ctxt) 
   when is_record(rope, Rope) do
