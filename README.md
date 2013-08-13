@@ -13,12 +13,12 @@ to a rope. The squares represent the internal record data structure for the rope
 the leaves together, while the leaves actually contain the text.
 
 
-Worst case purely concatenation rope:
+Straight concatenation with an auto-rebalance triggered part way:
 
 ![Worst case](http://copenhas.github.io/ropex/images/bulldozer.dot.png "worst case")
 
 
-The same rope rebalanced for better slice based operations:
+The same rope explicitly rebalanced for better slice based operations:
 
 ![Worst case rebalanced](http://copenhas.github.io/ropex/images/bulldozerrebalanced.dot.png "worst case rebalanced")
 
