@@ -62,7 +62,7 @@ defmodule Rope do
 
   @doc """
   Creates a new rope with the string provided. Not needed since
-  concat/2 supports strings and ropes as arguments.
+  `concat/2` supports strings and ropes as arguments.
 
   ## Examples
 
@@ -79,47 +79,9 @@ defmodule Rope do
   end
 
   @doc """
-  Concatenates two ropes together producing a new single rope. Accepts
-  ropes or strings as arguments.
-
-  ## Examples
-
-      iex> Rope.concat("Time is", " an illusion.") |> Rope.to_binary
-      "Time is an illusion."
-
-      iex> Rope.concat(Rope.new("terrible"), " ghastly silence") |> Rope.to_binary
-      "terrible ghastly silence"
-  """
-  @spec concat(rope | str, rope | str) :: rope
-  def concat(nil, nil) do
-    nil
-  end
-
-  def concat(rope, nil) do
-    ropeify rope
-  end
-
-  def concat(nil, rope) do
-    ropeify rope
-  end
-
-  def concat(rope1, rope2) do
-    rope1 = ropeify rope1
-    rope2 = ropeify rope2
-
-    depth = rope1.depth
-    if rope2.depth > depth do
-      depth = rope2.depth
-    end
-
-    rnode(depth: depth + 1,
-          left: rope1,
-          right: rope2,
-          length: rope1.length + rope2.length)
-  end
-
-  @doc """
-  Concatenates the list of ropes or strings together into a single new rope. 
+  Concatenates the list of ropes or strings together into a single new rope.
+  Accepts ropes or strings as arguments. Additionally you can override the
+  auto-rebalancing behavior with a `rebalance: false` option.
 
   ## Examples
 
@@ -129,14 +91,15 @@ defmodule Rope do
       iex> Rope.concat([Rope.new("terrible"), " ghastly", " silence"]) |> Rope.to_binary
       "terrible ghastly silence"
   """
-  @spec concat(list(rope | str)) :: rope
-  def concat([]) do
+  @spec concat(list(rope | str), list) :: rope
+  def concat([first | rest], opts // []) do
+    Enum.reduce(rest, ropeify(first), fn(right, left) -> do_concat(left, right, opts) end)
+  end
+
+  def concat([], _opts) do
     nil
   end
 
-  def concat([first | rest]) do
-    Enum.reduce(rest, first, fn(right, left) -> concat(left, right) end)
-  end
 
   @doc """
   Returns a sub-rope starting at the offset given by the first, and a length given by 
@@ -190,7 +153,23 @@ defmodule Rope do
     leftSub = slice(left, start, len)
     rightSub = slice(right, startRight, lenRight)
 
-    concat(leftSub, rightSub)
+    concat([leftSub, rightSub])
+  end
+
+  @doc """
+  Checks if the rope is considered balanced based on comparing total length
+  and depth verses the fibanocci sequence.
+  """
+  @spec balanced?(rope) :: bool
+  def balanced?(nil) do
+    true
+  end
+
+  def balanced?(rope) do
+    depth = Rope.depth(rope)
+    length = Rope.length(rope)
+
+    length >= fib(depth + 2)
   end
 
   @doc """
@@ -216,7 +195,7 @@ defmodule Rope do
 
   ## Examples
 
-      iex> Rope.length(Rope.concat(Rope.new("terrible"), " ghastly silence"))
+      iex> Rope.length(Rope.concat([Rope.new("terrible"), " ghastly silence"]))
       24
   """
   @spec length(rope) :: non_neg_integer
@@ -238,7 +217,7 @@ defmodule Rope do
 
   ## Examples
 
-      iex> Rope.depth(Rope.concat(Rope.new("terrible"), " ghastly silence"))
+      iex> Rope.depth(Rope.concat([Rope.new("terrible"), " ghastly silence"]))
       1
 
       iex> Rope.depth(Rope.concat([Rope.new("terrible"), " ghastly", " silence"]))
@@ -278,7 +257,7 @@ defmodule Rope do
     left = slice(rope, 0, index)
     right = slice(rope, index, rope.length)
 
-    left |> concat(str) |> concat(right)
+    concat([left, str, right])
   end
 
   @doc """
@@ -307,7 +286,7 @@ defmodule Rope do
     left = slice(rope, 0, index)
     right = slice(rope, index + len, rope.length)
 
-    concat(left, right)
+    concat([left, right])
   end
 
   @doc """
@@ -439,6 +418,42 @@ defmodule Rope do
     end
   end
 
+  defp do_concat(nil, nil, _opts) do
+    nil
+  end
+
+  defp do_concat(rope, nil, _opts) do
+    ropeify rope
+  end
+
+  defp do_concat(nil, rope, _opts) do
+    ropeify rope
+  end
+
+  defp do_concat(rope1, rope2, opts) do
+    rebalance = Keyword.get(opts, :rebalance, true)
+
+    rope1 = ropeify rope1
+    rope2 = ropeify rope2
+
+    depth = rope1.depth
+    if rope2.depth > depth do
+      depth = rope2.depth
+    end
+
+    rope = rnode(depth: depth + 1,
+          left: rope1,
+          right: rope2,
+          length: rope1.length + rope2.length)
+
+    if rebalance and (not Rope.balanced?(rope)) do
+      Rope.rebalance(rope)
+    else
+      rope
+    end
+  end
+
+
   defp build_possible_matches(offset, chunk, term, possibles) do
     chunkLength = String.length(chunk)
     termLength = String.length(term)
@@ -525,7 +540,7 @@ defmodule Rope do
     leftRope = slice(rope, 0, index)
     rightRope = slice(rope, index + termLen, rope.length - index - termLen)
 
-    leftRope |> concat(replacement) |> concat(rightRope)
+    concat([leftRope, replacement, rightRope])
   end
 
   defp do_replace_all(rope, pattern, replacement) do
@@ -562,7 +577,7 @@ defmodule Rope do
   end
 
   defp rebuild_rope(subropes, [leaf1, leaf2 | leaves]) do
-    subrope = Rope.concat(leaf1, leaf2)
+    subrope = Rope.concat([leaf1, leaf2])
     rebuild_rope([subrope | subropes], leaves)
   end
 
@@ -577,6 +592,20 @@ defmodule Rope do
   defp rebuild_rope(subropes, []) do
     subropes = Enum.reverse subropes
     rebuild_rope([], subropes)
+  end
+
+  defp fib(0), do: 1
+  defp fib(1), do: 1
+  defp fib(n) do
+    do_fib(n, [1, 1])
+  end
+
+  defp do_fib(2, [n2, n1]) do
+    n2 + n1
+  end
+
+  defp do_fib(n, [n2, n1]) do
+    do_fib(n - 1, [n2 + n1, n2])
   end
 
 

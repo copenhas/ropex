@@ -19,22 +19,23 @@ defmodule RopeTest do
   end
 
   test "can concat two strings together" do
-    rope = Rope.concat("hello", " world")
+    rope = Rope.concat(["hello", " world"])
     is_equal rope, "hello world"
   end
 
   test "can concat a single node rope and a string" do
     rope = Rope.new("hello")
-    rope = Rope.concat(rope, " world")
+    rope = Rope.concat([rope, " world"])
 
     is_equal rope, "hello world"
   end
 
   test "can concat a multi-node rope and a string together" do
-    rope = Rope.concat(Rope.new("Have you any idea how "), Rope.new("much damage that bulldozer"))
+    rope = Rope.concat([Rope.new("Have you any idea how "), Rope.new("much damage that bulldozer")])
+
     str = " would suffer if I just let it roll straight over you?"
 
-    rope = Rope.concat(rope, str)
+    rope = Rope.concat([rope, str])
 
     is_equal rope, @text
   end
@@ -45,10 +46,10 @@ defmodule RopeTest do
   end
 
   test "concat handles nils" do
-    rope = Rope.concat(nil, "test")
+    rope = Rope.concat([nil, "test"])
     is_equal rope, "test"
 
-    rope = Rope.concat("test", nil)
+    rope = Rope.concat(["test", nil])
     is_equal rope, "test"
   end
 
@@ -64,7 +65,7 @@ defmodule RopeTest do
     rope = Rope.new "test"
     is_equal Rope.slice(rope, 4, 10), String.slice("test", 4, 10)
 
-    rope = Rope.concat "hello", " world"
+    rope = Rope.concat ["hello", " world"]
     length = String.length @simple
     is_equal Rope.slice(rope, length, 10), String.slice(@simple, length, 10)
   end
@@ -102,7 +103,7 @@ defmodule RopeTest do
   end
 
   test "get the depth of a rope" do
-    rope = build_rope @longtext
+    rope = build_rope @longtext, rebalance: false
     assert Rope.depth(rope) == 185
 
     rope = build_rope @simple
@@ -110,7 +111,7 @@ defmodule RopeTest do
   end
 
   test "things should rebalance" do
-    rope = build_rope @longtext
+    rope = build_rope @longtext, rebalance: false
     assert Rope.depth(rope) == 185
 
     rope = Rope.rebalance rope
@@ -132,7 +133,7 @@ defmodule RopeTest do
       |> build_rope
       |> Rope.rebalance
 
-    rope = Rope.concat(rope, build_rope(@longtext))
+    rope = Rope.concat([rope, build_rope(@longtext)])
     ropebalanced = Rope.rebalance(rope)
 
     is_equal rope, ropebalanced
@@ -205,7 +206,7 @@ defmodule RopeTest do
     is_equal Rope.remove_at(orig, 2, 5), "Beof the Leopard"
   end
 
-  defp build_rope(text) do
+  defp build_rope(text, opts // []) do
     words = text
       |> String.split(" ")
 
@@ -213,7 +214,9 @@ defmodule RopeTest do
 
     words
       |> Enum.drop(1)
-      |> Enum.reduce(Rope.new(first), fn (word, rope) -> Rope.concat(rope, " " <> word) end)
+      |> Enum.reduce(Rope.new(first), fn (word, rope) -> 
+          Rope.concat([rope, " " <> word], opts) 
+        end)
   end
 
   defp is_equal(rope, str)
