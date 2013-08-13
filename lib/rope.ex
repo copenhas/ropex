@@ -327,8 +327,8 @@ defmodule Rope do
   end
 
   defrecordp :findctxt,
-    findIndex: 0, #where the match started in the rope
-    termIndex: 0 #next index to try
+    findIndex: 0 :: non_neg_integer, #where the match started in the rope
+    termIndex: 0 :: non_neg_integer #next index to try
 
   def find(rope, term) do
     termLen = String.length(term)
@@ -374,24 +374,6 @@ defmodule Rope do
   """
   @spec find_all(rope, str) :: list(non_neg_integer)
   def find_all(rope, term) do
-    termLen = String.length(term)
-
-    foundMatch = fn(findctxt(termIndex: i)) -> i == termLen end
-
-    {_offset, possibles} = Enum.reduce(rope, { 0, []},
-      fn(rleaf(length: len, value: chunk), {offset, possibles}) ->
-        {offset + len, build_possible_matches(offset, chunk, term, possibles)}
-      end
-    )
-
-    match = possibles
-      |> Enum.filter(foundMatch)
-      |> Enum.map(fn(findctxt(findIndex: i)) -> i end)
-      |> Enum.reverse
-  end
-
-
-  def pfind_all(rope, term) do
     termLength = String.length(term)
     segments = partition_rope(0, rope, termLength, 0)
     parent = self()
@@ -402,7 +384,7 @@ defmodule Rope do
           ref = make_ref
 
           spawn_link(fn() ->
-            matches = Rope.find_all(slice, term)
+            matches = do_find_all(slice, term)
               |> Enum.map(fn(match) -> match + offset end)
 
             parent <- {ref, :pfind, self(), matches}
@@ -488,28 +470,52 @@ defmodule Rope do
     end)
   end
 
-  defp partition_rope(offset, rleaf() = leaf, termLength, _depth) do
-    [{offset, Rope.length(leaf) + termLength}]
+
+  defp partition_rope(_offset, nil, _termLength, _depth) do
+    []
   end
 
-  defp partition_rope(offset, rnode(right: right, left: left) = node, termLength, depth) do
+  defp partition_rope(offset, rleaf(length: len), termLength, _depth) do
+    [{offset, len + termLength}]
+  end
+
+  defp partition_rope(offset, rnode(length: len, right: right, left: left), termLength, depth) do
     if offset > termLength do
       offset = offset - termLength
     end
 
     cond do
       depth >= @partition_depth_limit ->
-        [{offset, offset + Rope.length(node) + termLength}]
-      Rope.length(left) <= @partition_size_threshold or Rope.length(right) <= @partition_size_threshold ->
-        [{offset, offset + Rope.length(node) + termLength}]
-      (termLength / Rope.length(left)) > @partition_term_ratio or (termLength / Rope.length(right)) > @partition_term_ratio ->
-        [{offset, offset + Rope.length(node) + termLength}]
+        [{offset, offset + len + termLength}]
+      Rope.length(left) <= @partition_size_threshold or
+      Rope.length(right) <= @partition_size_threshold ->
+        [{offset, offset + len + termLength}]
+      (termLength / Rope.length(left)) > @partition_term_ratio or
+      (termLength / Rope.length(right)) > @partition_term_ratio ->
+        [{offset, offset + len + termLength}]
       true ->
         leftSegments = partition_rope(offset, left, termLength, depth + 1)
         rightSegments = partition_rope(offset + Rope.length(left), right, termLength, depth + 1)
 
         leftSegments ++ rightSegments
     end
+  end
+
+  defp do_find_all(rope, term) do
+    termLen = String.length(term)
+
+    foundMatch = fn(findctxt(termIndex: i)) -> i == termLen end
+
+    {_offset, possibles} = Enum.reduce(rope, { 0, []},
+      fn(rleaf(length: len, value: chunk), {offset, possibles}) ->
+        {offset + len, build_possible_matches(offset, chunk, term, possibles)}
+      end
+    )
+
+    match = possibles
+      |> Enum.filter(foundMatch)
+      |> Enum.map(fn(findctxt(findIndex: i)) -> i end)
+      |> Enum.reverse
   end
 
   defp do_replace(rope, pattern, replacement) do

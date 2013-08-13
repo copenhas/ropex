@@ -2,7 +2,7 @@
 
 default: tags test 
 
-all: tags test check docs
+all: tags test check graph perf docs
 
 test:
 	mix test
