@@ -5,5 +5,5 @@ Expm.Package.new(
   keywords: ["string", "data structure"],
   licenses: ["Apache 2.0"]
   maintainers: [[name: "Sean Copenhaver", email: "sean.copenhaver+expm@gmail.com"]],
-  repositories: [[github: "copenhas/ropex", tag: "0.1.0"]]
+  repositories: [[github: "copenhas/ropex", tag: "v0.1.0"]]
 )
