@@ -2,7 +2,7 @@ defmodule Rope.Mixfile do
   use Mix.Project
 
   def version do
-    "master"
+    "v0.1.1"
   end
 
   def source_url do

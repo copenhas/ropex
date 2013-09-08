@@ -66,7 +66,7 @@ defmodule Rope do
 
   ## Examples
 
-      iex> Rope.new("Don't panic") |> Rope.to_binary
+      iex> Rope.new("Don't panic") |> Rope.to_string
       "Don't panic"
   """
   @spec new(str | nil) :: rope
@@ -85,10 +85,10 @@ defmodule Rope do
 
   ## Examples
 
-      iex> Rope.concat(["Time is", " an illusion."]) |> Rope.to_binary
+      iex> Rope.concat(["Time is", " an illusion."]) |> Rope.to_string
       "Time is an illusion."
 
-      iex> Rope.concat([Rope.new("terrible"), " ghastly", " silence"]) |> Rope.to_binary
+      iex> Rope.concat([Rope.new("terrible"), " ghastly", " silence"]) |> Rope.to_string
       "terrible ghastly silence"
   """
   @spec concat(list(rope | str), list) :: rope
@@ -112,7 +112,27 @@ defmodule Rope do
     nil
   end
 
-  def slice(leaf = rleaf(length: rlen, value: value), start, len) do
+  def slice(_rope, start, len) when len == 0 do
+    ropeify ""
+  end
+
+  def slice(rnode(length: rlen), start, len) 
+  when start == rlen and len > 0 do
+    ropeify ""
+  end
+
+  def slice(node = rnode(length: rlen), start, len) 
+  when start == 0 and rlen <= len and len > 0 do
+    node
+  end
+
+  def slice(rnode(length: rlen), start, len)
+  when start > rlen and len > 0 do
+    nil
+  end
+
+  def slice(leaf = rleaf(length: rlen, value: value), start, len) 
+  when len > 0 do
     if start == 0 and rlen <= len do
       leaf
     else
@@ -120,22 +140,7 @@ defmodule Rope do
     end
   end
 
-  def slice(node = rnode(length: rlen), start, len) 
-  when start == 0 and rlen <= len do
-    node
-  end
-
-  def slice(rnode(length: rlen), start, _len) 
-  when start > rlen do
-    nil
-  end
-
-  def slice(rnode(length: rlen), start, _len) 
-  when start == rlen do
-    ropeify ""
-  end
-
-  def slice(rope, start, len) do
+  def slice(rope, start, len) when len > 0 do
     rnode(left: left,
           right: right) = rope
 
@@ -151,9 +156,13 @@ defmodule Rope do
       end
 
     leftSub = slice(left, start, len)
-    rightSub = slice(right, startRight, lenRight)
 
-    concat([leftSub, rightSub])
+    if lenRight > 0 do
+      rightSub = slice(right, startRight, lenRight)
+      concat([leftSub, rightSub])
+    else
+      leftSub
+    end
   end
 
   @doc """
@@ -238,10 +247,10 @@ defmodule Rope do
 
   ## Examples
 
-      iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), 16, "of ") |> Rope.to_binary
+      iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), 16, "of ") |> Rope.to_string
       "infinite number of monkeys"
 
-      iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), -7, "of ") |> Rope.to_binary
+      iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), -7, "of ") |> Rope.to_string
       "infinite number of monkeys"
   """
   @spec insert_at(rope, integer, str) :: rope
@@ -267,10 +276,10 @@ defmodule Rope do
 
   ## Examples
 
-      iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), 19, 3) |> Rope.to_binary
+      iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), 19, 3) |> Rope.to_string
       "infinite number of keys"
 
-      iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), -7, 3) |> Rope.to_binary
+      iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), -7, 3) |> Rope.to_string
       "infinite number of keys"
   """
   @spec remove_at(rope, integer, non_neg_integer) :: rope
@@ -400,8 +409,8 @@ defmodule Rope do
   @doc """
   Converts the entire rope to a single binary.
   """
-  @spec to_binary(rope) :: binary
-  def to_binary(rope) do
+  @spec to_string(rope) :: binary
+  def to_string(rope) do
     rope
     |> Stream.map(fn(rleaf(value: value)) -> value end)
     |> Enum.join
@@ -611,12 +620,12 @@ defmodule Rope do
   end
 
 
-  defimpl Binary.Chars, for: Rope do
+  defimpl String.Chars, for: Rope do
     @doc """
     Converts the entire rope to a single binary string.
     """
-    def to_binary(rope) do
-      Rope.to_binary(rope)
+    def to_string(rope) do
+      Rope.to_string(rope)
     end
   end
 
