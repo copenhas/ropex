@@ -73,9 +73,7 @@ String module compatible API.</p>
         </div>
       
 
-      <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L1" target="_blank" class="view_source">Source</a>
-
-      
+      <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L1" target="_blank" class="view_source">Source</a>
 
       
 
@@ -144,7 +142,7 @@ String module compatible API.</p>
 </li>
 <li>
   <span class="summary_signature">
-    <a href="#to_binary/1">to_binary/1</a>
+    <a href="#to_string/1">to_string/1</a>
   </span>
 </li>
 
@@ -156,44 +154,95 @@ String module compatible API.</p>
       
 
       
+        <div id="types_details" class="details_list">
+          <h2>Types</h2>
+          <div class="type_detail">
+  <p class="typespec" id="t:rope/0">
+    <a href="#t:rope/0">rope</a> :: rnode_t | rleaf_t | nil
+  </p>
+</div>
+<div class="type_detail">
+  <p class="typespec" id="t:str/0">
+    <a href="#t:str/0">str</a> :: binary
+  </p>
+</div>
+<div class="type_detail">
+  <p class="typespec" id="t:codepoint/0">
+    <a href="#t:codepoint/0">codepoint</a> :: <a href="#t:str/0">str</a>
+  </p>
+</div>
+<div class="type_detail">
+  <p class="typespec" id="t:grapheme/0">
+    <a href="#t:grapheme/0">grapheme</a> :: <a href="#t:str/0">str</a>
+  </p>
+</div>
+
+        </div>
+      
+
+      
         <div id="functions_details" class="details_list">
           <h2>Functions</h2>
           <div class="detail">
   <p class="signature" id="balanced?/1">
     <strong>balanced?(rope)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>balanced?(<a href="#t:rope/0">rope</a>) :: bool</li>
+      
+    </ul>
+  
   <div class="docstring"><p>Checks if the rope is considered balanced based on comparing total length
 and depth verses the fibanocci sequence.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L164" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L173" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="concat/2">
     <strong>concat(list1, opts // [])</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>concat([<a href="#t:rope/0">rope</a> | <a href="#t:str/0">str</a>], []) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Concatenates the list of ropes or strings together into a single new rope.
 Accepts ropes or strings as arguments. Additionally you can override the
 auto-rebalancing behavior with a <code>rebalance: false</code> option.</p>
 
 <h2>Examples</h2>
 
-<pre><code>iex&gt; Rope.concat([&quot;Time is&quot;, &quot; an illusion.&quot;]) |&gt; Rope.to_binary
+<pre><code>iex&gt; Rope.concat([&quot;Time is&quot;, &quot; an illusion.&quot;]) |&gt; Rope.to_string
 &quot;Time is an illusion.&quot;
 
-iex&gt; Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&quot;, &quot; silence&quot;]) |&gt; Rope.to_binary
+iex&gt; Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&quot;, &quot; silence&quot;]) |&gt; Rope.to_string
 &quot;terrible ghastly silence&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L95" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L95" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="depth/1">
     <strong>depth(rope)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>depth(<a href="#t:rope/0">rope</a>) :: non_neg_integer</li>
+      
+    </ul>
+  
   <div class="docstring"><p>Returns the depth of the rope tree. Only particularly of interest to
 the curious, or those wanting to calculate for themselves when to
 rebalance.</p>
@@ -210,13 +259,21 @@ iex&gt; Rope.depth(Rope.concat([Rope.new(&quot;terrible&quot;), &quot; ghastly&q
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L227" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L236" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="find/2">
     <strong>find(rope, term)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>find(<a href="#t:rope/0">rope</a>, <a href="#t:str/0">str</a>) :: integer</li>
+      
+    </ul>
+  
   <div class="docstring"><p>Returns the index of the first match or -1 if no match was found.</p>
 
 <h2>Examples</h2>
@@ -229,13 +286,21 @@ iex&gt; Rope.find(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L304" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L313" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="find_all/2">
     <strong>find_all(rope, term)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>find_all(<a href="#t:rope/0">rope</a>, <a href="#t:str/0">str</a>) :: [non_neg_integer]</li>
+      
+    </ul>
+  
   <div class="docstring"><p>Find all matches in the rope returning a list of indexes,
 or an empty list if no matches were found. The list is in order
 from first to last match.</p>
@@ -250,33 +315,49 @@ iex&gt; Rope.find_all(Rope.concat([&quot;loathe it&quot;, &quot; or ignore it,&q
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L355" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L364" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="insert_at/3">
     <strong>insert_at(rope, index, str)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>insert_at(<a href="#t:rope/0">rope</a>, integer, <a href="#t:str/0">str</a>) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Produces a new rope with the string inserted at the index provided.
 This wraps around so negative indexes will start from the end.</p>
 
 <h2>Examples</h2>
 
-<pre><code>iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, &quot;monkeys&quot;]), 16, &quot;of &quot;) |&gt; Rope.to_binary
+<pre><code>iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, &quot;monkeys&quot;]), 16, &quot;of &quot;) |&gt; Rope.to_string
 &quot;infinite number of monkeys&quot;
 
-iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, &quot;monkeys&quot;]), -7, &quot;of &quot;) |&gt; Rope.to_binary
+iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, &quot;monkeys&quot;]), -7, &quot;of &quot;) |&gt; Rope.to_string
 &quot;infinite number of monkeys&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L248" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L257" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="length/1">
     <strong>length(rope)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>length(<a href="#t:rope/0">rope</a>) :: non_neg_integer</li>
+      
+    </ul>
+  
   <div class="docstring"><p>Retrieve the length in ut8 characters in the rope.</p>
 
 <h2>Examples</h2>
@@ -286,93 +367,141 @@ iex&gt; Rope.insert_at(Rope.concat([&quot;infinite &quot;, &quot;number &quot;, 
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L202" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L211" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="new/1">
     <strong>new(str)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>new(<a href="#t:str/0">str</a> | nil) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Creates a new rope with the string provided. Not needed since
 <a href="#concat/2"><code>concat/2</code></a> supports strings and ropes as arguments.</p>
 
 <h2>Examples</h2>
 
-<pre><code>iex&gt; Rope.new(&quot;Don&#39;t panic&quot;) |&gt; Rope.to_binary
+<pre><code>iex&gt; Rope.new(&quot;Don&#39;t panic&quot;) |&gt; Rope.to_string
 &quot;Don&#39;t panic&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L73" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L73" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="rebalance/1">
     <strong>rebalance(rope)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>rebalance(<a href="#t:rope/0">rope</a>) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Rebalance the rope explicitly to help keep insert, remove, etc
 efficient. This is a pretty greedy rebalancing and should produce
 a fully balanced rope.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L181" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L190" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="remove_at/3">
     <strong>remove_at(rope, index, len)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>remove_at(<a href="#t:rope/0">rope</a>, integer, non_neg_integer) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Produces a new rope with the substr defined by the starting index and the length of 
 characters removed. The advantage of this is it takes full advantage of ropes 
 being optimized for index based operation.</p>
 
 <h2>Examples</h2>
 
-<pre><code>iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot;, &quot;monkeys&quot;]), 19, 3) |&gt; Rope.to_binary
+<pre><code>iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot;, &quot;monkeys&quot;]), 19, 3) |&gt; Rope.to_string
 &quot;infinite number of keys&quot;
 
-iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot;, &quot;monkeys&quot;]), -7, 3) |&gt; Rope.to_binary
+iex&gt; Rope.remove_at(Rope.concat([&quot;infinite &quot;, &quot;number of &quot;, &quot;monkeys&quot;]), -7, 3) |&gt; Rope.to_string
 &quot;infinite number of keys&quot;
 </code></pre>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L277" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L286" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="replace/4">
     <strong>replace(rope, pattern, replacement, opts // [])</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>replace(<a href="#t:rope/0">rope</a>, <a href="#t:str/0">str</a>, <a href="#t:str/0">str</a>, []) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Replaces the first match with the replacement text and returns
 the new rope. If not found then the existing rope is returned.
 By default, it replaces all entries, except if the global option 
 is set to false.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L390" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L399" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
   <p class="signature" id="slice/3">
     <strong>slice(rope, start, len)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>slice(<a href="#t:rope/0">rope</a>, integer, integer) :: <a href="#t:rope/0">rope</a></li>
+      
+    </ul>
+  
   <div class="docstring"><p>Returns a sub-rope starting at the offset given by the first, and a length given by 
 the second. If the offset is greater than string length, than it returns nil.</p>
 
 <p>Similar to String.slice/3, check the tests for some examples of usage.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L111" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L111" target="_blank" class="view_source">Source</a>
   
 </div>
 <div class="detail">
-  <p class="signature" id="to_binary/1">
-    <strong>to_binary(rope)</strong>
+  <p class="signature" id="to_string/1">
+    <strong>to_string(rope)</strong>
   </p>
+  
+    <p>Specs:</p>
+    <ul class="spec">
+      
+        <li>to_string(<a href="#t:rope/0">rope</a>) :: binary</li>
+      
+    </ul>
+  
   <div class="docstring"><p>Converts the entire rope to a single binary.</p>
 </div>
   
-    <a href="https://github.com/copenhas/ropex/blob/master/lib/rope.ex#L404" target="_blank" class="view_source">Source</a>
+    <a href="https://github.com/copenhas/ropex/blob/v0.1.1/lib/rope.ex#L413" target="_blank" class="view_source">Source</a>
   
 </div>
 
