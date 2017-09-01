@@ -1,38 +1,35 @@
 defmodule Rope.Mixfile do
   use Mix.Project
 
-  def version do
-    "v0.1.1"
-  end
-
-  def source_url do
-    "https://github.com/copenhas/ropex"
-  end
-
   def project do
-    [ app: :rope,
-      version: version,
-      elixir: "~> 0.10.0",
+    [
+      app: :rope,
+      version: "0.1.2",
+      elixir: "~> 1.5",
+      start_permanent: Mix.env == :prod,
+      deps: deps(),
+
+      # Docs
       name: "ropex",
-      source_url: source_url,
-      deps: deps,
-      docs: [
-        source_url_pattern: "#{source_url}/blob/#{version}/%{path}#L%{line}"
-      ]
+      source_url: "https://github.com/ijcd/ropex",
     ]
   end
 
-  # Configuration for the OTP application
+  # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      extra_applications: [:logger]
     ]
   end
 
-  # Returns the list of dependencies in the format:
-  # { :foobar, "0.1", git: "https://github.com/elixir-lang/foobar.git" }
+  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      { :ex_doc, github: "elixir-lang/ex_doc" }
+      {:apex, "~>1.0.0"},
+      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
+      {:credo, "~> 0.8.5"},
+      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
+      # {:stream_data, "~> 0.2.0"},
     ]
   end
 end
