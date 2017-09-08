@@ -2,8 +2,9 @@ Code.require_file "test_helper.exs", __DIR__
 
 defmodule PerformanceTest do
   use ExUnit.Case
+  import Record
 
-  defrecord TestCtxt,
+  Record.defrecord TestCtxt,
     rope: nil,
     extra: [],
     time: 0
@@ -25,7 +26,7 @@ defmodule PerformanceTest do
     IO.puts "\nSMALL ROPE: concat without rebalance takes #{avg} microseconds"
     assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
-    threshold = 1_700 
+    threshold = 1_700
     avg = rope |> build_ctxt |> run(10, :slice)
     IO.puts "\nSMALL ROPE: slice takes #{avg} microseconds"
     assert avg < threshold, "slices on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
@@ -45,7 +46,7 @@ defmodule PerformanceTest do
     IO.puts "\nHUGE ROPE: concat with no rebalance takes #{avg} microseconds"
     assert avg < threshold, "concats avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
 
-    threshold = 4_000 
+    threshold = 4_000
     avg = rope |> build_ctxt |> run(10, :slice)
     IO.puts "\nHUGE ROPE: slice takes #{avg} microseconds"
     assert avg < threshold, "slice on a balanced rope avg of #{avg} microseconds, longer then threshold of #{threshold} microseconds"
@@ -101,7 +102,7 @@ defmodule PerformanceTest do
     #gotta preserve the newlines
     [first | rest] = String.split(text, "\n")
     rest
-      |> Enum.reduce(first, fn(line, rope) -> 
+      |> Enum.reduce(first, fn(line, rope) ->
           Rope.concat([rope, "\n" <> line], rebalance: false)
          end)
       |> Rope.rebalance
@@ -140,12 +141,12 @@ defmodule PerformanceTest do
     finished.time / num
   end
 
-  def generate_args(:slice, TestCtxt[rope: rope]) 
+  def generate_args(:slice, TestCtxt[rope: rope])
   when is_record(rope, Rope) do
     {:random.uniform(div(rope.length, 2)), :random.uniform(rope.length) + 100}
   end
 
-  def generate_args(:slice, TestCtxt[rope: text]) 
+  def generate_args(:slice, TestCtxt[rope: text])
   when is_binary(text) do
     {:random.uniform(div(String.length(text), 2)), :random.uniform(String.length(text)) + 100}
   end
@@ -186,25 +187,25 @@ defmodule PerformanceTest do
   ###########################
   # Rope operations
   ###########################
-  def execute_operation({:slice, {start, len}}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:slice, {start, len}}, TestCtxt[rope: rope] = ctxt)
   when is_record(rope, Rope) do
     Rope.slice(rope, start, len)
     ctxt #leaving the context unchanged
   end
 
-  def execute_operation({:concat, word}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:concat, word}, TestCtxt[rope: rope] = ctxt)
   when is_record(rope, Rope) do
     newRope = Rope.concat([rope | [word]])
     ctxt.rope newRope
   end
 
-  def execute_operation({:concat_no_rebalance, word}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:concat_no_rebalance, word}, TestCtxt[rope: rope] = ctxt)
   when is_record(rope, Rope) do
     newRope = Rope.concat([rope, word], rebalance: false)
     ctxt.rope newRope
 end
 
-  def execute_operation({:find, term}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:find, term}, TestCtxt[rope: rope] = ctxt)
   when is_record(rope, Rope) do
     Rope.find(rope, term)
     ctxt #no change, and find returns the index
@@ -218,19 +219,19 @@ end
   ############################
   # String operations for comparison
   ############################
-  def execute_operation({:slice, {start, len}}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:slice, {start, len}}, TestCtxt[rope: rope] = ctxt)
   when is_binary(rope) do
     String.slice(rope, start, len)
     ctxt #leaving the context unchanged
   end
 
-  def execute_operation({:concat, word}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:concat, word}, TestCtxt[rope: rope] = ctxt)
   when is_binary(rope) do
     newRope = rope <> word
     ctxt.rope newRope
   end
 
-  def execute_operation({:find, term}, TestCtxt[rope: rope] = ctxt) 
+  def execute_operation({:find, term}, TestCtxt[rope: rope] = ctxt)
   when is_binary(rope) do
     String.contains?(rope, term)
     ctxt #no change, and find returns the index

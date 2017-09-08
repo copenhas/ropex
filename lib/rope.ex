@@ -12,7 +12,7 @@ defmodule Rope do
   4. Should be able to handle alternate representations (ex: IO stream) - we'll see
 
   A rope is build up of leaf and parent/concatenation nodes. Leaf nodes contain the
-  chunks of binary strings that are concatenated or inserted into the rope. The 
+  chunks of binary strings that are concatenated or inserted into the rope. The
   parent/concatentation nodes are purely used to link the various leaf nodes together.
   The concatentation nodes contain basic tree information.
 
@@ -35,24 +35,43 @@ defmodule Rope do
   - https://en.wikipedia.org/wiki/Rope_\(data_structure\)
   """
 
+  require Record
 
   @partition_size_threshold 1000
   @partition_term_ratio 0.1
   @partition_depth_limit 3
 
+  defmodule Rnode do
+    defstruct [
+      length: 0,
+      depth: 1,
+      left: nil,
+      right: nil
+    ]
 
-  defrecordp :rnode, Rope,
-    length: 0 :: non_neg_integer,
-    depth: 1 :: non_neg_integer,
-    left: nil :: rope,
-    right: nil :: rope
+    @type t :: %__MODULE__{
+      length: non_neg_integer,
+      depth: non_neg_integer,
+      left: Rope.t,
+      right: Rope.t
+    }
+  end
 
-  defrecordp :rleaf, Rope,
-    length: 0 :: non_neg_integer,
-    depth: 0 :: non_neg_integer,
-    value: nil :: binary
+  defmodule Rleaf do
+    defstruct [
+      length: 0,
+      depth: 0,
+      value: nil
+    ]
 
-  @type rope :: rnode_t | rleaf_t | nil
+    @type t :: %__MODULE__{
+      length: non_neg_integer,
+      depth: non_neg_integer,
+      value: binary
+    }
+  end
+
+  @type t :: Rnode.t | Rleaf.t | nil
 
   # copied the type defs from the String module
   @type str :: binary
@@ -69,13 +88,13 @@ defmodule Rope do
       iex> Rope.new("Don't panic") |> Rope.to_string
       "Don't panic"
   """
-  @spec new(str | nil) :: rope
+  @spec new(str | nil) :: t
   def new(nil) do
     nil
   end
 
   def new(str) when is_binary(str) do
-    rleaf(length: String.length(str), value: str)
+    %Rleaf{length: String.length(str), value: str}
   end
 
   @doc """
@@ -91,8 +110,9 @@ defmodule Rope do
       iex> Rope.concat([Rope.new("terrible"), " ghastly", " silence"]) |> Rope.to_string
       "terrible ghastly silence"
   """
-  @spec concat(list(rope | str), list) :: rope
-  def concat([first | rest], opts // []) do
+  @spec concat(list(t | str), list) :: t
+  def concat(_rope, _opts \\ [])
+  def concat([first | rest], opts) do
     Enum.reduce(rest, ropeify(first), fn(right, left) -> do_concat(left, right, opts) end)
   end
 
@@ -102,36 +122,36 @@ defmodule Rope do
 
 
   @doc """
-  Returns a sub-rope starting at the offset given by the first, and a length given by 
+  Returns a sub-rope starting at the offset given by the first, and a length given by
   the second. If the offset is greater than string length, than it returns nil.
 
   Similar to String.slice/3, check the tests for some examples of usage.
   """
-  @spec slice(rope, integer, integer) :: rope
+  @spec slice(t, integer, integer) :: t
   def slice(nil, _start, _len) do
     nil
   end
 
-  def slice(_rope, start, len) when len == 0 do
+  def slice(_rope, _start, len) when len == 0 do
     ropeify ""
   end
 
-  def slice(rnode(length: rlen), start, len) 
+  def slice(%Rnode{length: rlen}, start, len)
   when start == rlen and len > 0 do
     ropeify ""
   end
 
-  def slice(node = rnode(length: rlen), start, len) 
+  def slice(node = %Rnode{length: rlen}, start, len)
   when start == 0 and rlen <= len and len > 0 do
     node
   end
 
-  def slice(rnode(length: rlen), start, len)
+  def slice(%Rnode{length: rlen}, start, len)
   when start > rlen and len > 0 do
     nil
   end
 
-  def slice(leaf = rleaf(length: rlen, value: value), start, len) 
+  def slice(leaf = %Rleaf{length: rlen, value: value}, start, len)
   when len > 0 do
     if start == 0 and rlen <= len do
       leaf
@@ -141,12 +161,15 @@ defmodule Rope do
   end
 
   def slice(rope, start, len) when len > 0 do
-    rnode(left: left,
-          right: right) = rope
+    %Rnode{left: left,
+          right: right} = rope
 
-    if start < 0 do
-      start = rope.length + start
-    end
+    start =
+      if start < 0 do
+        rope.length + start
+      else
+        start
+      end
 
     {startRight, lenRight} =
       if start < left.length do
@@ -169,7 +192,7 @@ defmodule Rope do
   Checks if the rope is considered balanced based on comparing total length
   and depth verses the fibanocci sequence.
   """
-  @spec balanced?(rope) :: bool
+  @spec balanced?(t) :: boolean
   def balanced?(nil) do
     true
   end
@@ -186,13 +209,17 @@ defmodule Rope do
   efficient. This is a pretty greedy rebalancing and should produce
   a fully balanced rope.
   """
-  @spec rebalance(rope) :: rope
+  @spec rebalance(t) :: t
   def rebalance(nil) do
     nil
   end
 
-  def rebalance(rope) when is_record(rope, Rope) do
-    leaves = rope
+  def rebalance(%Rleaf{} = rope), do: rebalance_rope(rope)
+  def rebalance(%Rnode{} = rope), do: rebalance_rope(rope)
+
+  defp rebalance_rope(rope) do
+    leaves =
+      rope
       |> Enum.reduce([], fn(leaf, acc) -> [leaf | acc] end)
       |> Enum.reverse
 
@@ -207,12 +234,12 @@ defmodule Rope do
       iex> Rope.length(Rope.concat([Rope.new("terrible"), " ghastly silence"]))
       24
   """
-  @spec length(rope) :: non_neg_integer
+  @spec length(t) :: non_neg_integer
   def length(rope) do
     case rope do
       nil -> 0
-      rleaf(length: len) -> len
-      rnode(length: len) -> len
+      %Rleaf{length: len} -> len
+      %Rnode{length: len} -> len
     end
   end
 
@@ -232,12 +259,12 @@ defmodule Rope do
       iex> Rope.depth(Rope.concat([Rope.new("terrible"), " ghastly", " silence"]))
       2
   """
-  @spec depth(rope) :: non_neg_integer
+  @spec depth(t) :: non_neg_integer
   def depth(rope) do
     case rope do
       nil -> 0
-      rnode(depth: depth) -> depth
-      rleaf(depth: depth) -> depth
+      %Rnode{depth: depth} -> depth
+      %Rleaf{depth: depth} -> depth
     end
   end
 
@@ -253,15 +280,18 @@ defmodule Rope do
       iex> Rope.insert_at(Rope.concat(["infinite ", "number ", "monkeys"]), -7, "of ") |> Rope.to_string
       "infinite number of monkeys"
   """
-  @spec insert_at(rope, integer, str) :: rope
+  @spec insert_at(t, integer, str) :: t
   def insert_at(nil, _index, str) do
     ropeify(str)
   end
 
   def insert_at(rope, index, str) do
-    if index < 0 do
-      index = rope.length + index
-    end
+    index =
+      if index < 0 do
+        rope.length + index
+      else
+        index
+      end
 
     left = slice(rope, 0, index)
     right = slice(rope, index, rope.length)
@@ -270,8 +300,8 @@ defmodule Rope do
   end
 
   @doc """
-  Produces a new rope with the substr defined by the starting index and the length of 
-  characters removed. The advantage of this is it takes full advantage of ropes 
+  Produces a new rope with the substr defined by the starting index and the length of
+  characters removed. The advantage of this is it takes full advantage of ropes
   being optimized for index based operation.
 
   ## Examples
@@ -282,15 +312,18 @@ defmodule Rope do
       iex> Rope.remove_at(Rope.concat(["infinite ", "number of ", "monkeys"]), -7, 3) |> Rope.to_string
       "infinite number of keys"
   """
-  @spec remove_at(rope, integer, non_neg_integer) :: rope
+  @spec remove_at(t, integer, non_neg_integer) :: t
   def remove_at(nil, _index, _len) do
     nil
   end
 
   def remove_at(rope, index, len) do
-    if index < 0 do
-      index = rope.length + index
-    end
+    index =
+      if index < 0 do
+        rope.length + index
+      else
+        index
+      end
 
     left = slice(rope, 0, index)
     right = slice(rope, index + len, rope.length)
@@ -309,14 +342,19 @@ defmodule Rope do
       iex> Rope.find(Rope.concat(["loathe it", " or ignore it,", " you can't like it"]), "and")
       -1
   """
-  @spec find(rope, str) :: integer
+  @spec find(t, str) :: integer
   def find(nil, _term) do
     -1
   end
 
-  defrecordp :findctxt,
-    findIndex: 0 :: non_neg_integer, #where the match started in the rope
-    termIndex: 0 :: non_neg_integer #next index to try
+  Record.defrecordp :findctxt,
+    findIndex: 0, #where the match started in the rope
+    termIndex: 0  #next index to try
+
+  @type findctxt_t :: record(:findctxt,
+    findIndex: non_neg_integer, #where the match started in the rope
+    termIndex: non_neg_integer  #next index to try
+  )
 
   def find(rope, term) do
     termLen = String.length(term)
@@ -324,12 +362,12 @@ defmodule Rope do
     foundMatch = fn(findctxt(termIndex: i)) -> i == termLen end
 
     {_offset, possibles} = do_reduce_while(rope, { 0, []},
-      fn(leaf, {_offset, possibles}) ->
+      fn(_leaf, {_offset, possibles}) ->
         # it wil continue so long as we retruen true
         # we want to stop when we have a match
         not Enum.any?(possibles, foundMatch)
       end,
-      fn(rleaf(length: len, value: chunk), {offset, possibles}) ->
+      fn(%Rleaf{length: len, value: chunk}, {offset, possibles}) ->
         {offset + len, build_possible_matches(offset, chunk, term, possibles)}
       end
     )
@@ -338,7 +376,7 @@ defmodule Rope do
       |> Enum.filter(foundMatch)
       |> Enum.map(fn(findctxt(findIndex: i)) -> i end)
       |> Enum.reverse
-      |> Enum.first
+      |> Enum.at(0)
 
     if match == nil do
       -1
@@ -360,7 +398,7 @@ defmodule Rope do
       iex> Rope.find_all(Rope.concat(["loathe it", " or ignore it,", " you can't like it"]), "and")
       []
   """
-  @spec find_all(rope, str) :: list(non_neg_integer)
+  @spec find_all(t, str) :: list(non_neg_integer)
   def find_all(rope, term) do
     termLength = String.length(term)
     segments = partition_rope(0, rope, termLength, 0)
@@ -369,18 +407,18 @@ defmodule Rope do
     segments
       |> Enum.map(fn({offset, length}) ->
           slice = Rope.slice(rope, offset, length)
-          ref = make_ref
+          ref = make_ref()
 
           spawn_link(fn() ->
             matches = do_find_all(slice, term)
               |> Enum.map(fn(match) -> match + offset end)
 
-            parent <- {ref, :pfind, self(), matches}
+            send parent, {ref, :pfind, self(), matches}
           end)
         end)
-      |> Enum.map(fn(child) ->
+      |> Enum.map(fn(_child) ->
           receive do
-            {ref, :pfind, child, matches} ->
+            {_ref, :pfind, _child, matches} ->
               matches
           end
         end)
@@ -392,11 +430,11 @@ defmodule Rope do
   @doc """
   Replaces the first match with the replacement text and returns
   the new rope. If not found then the existing rope is returned.
-  By default, it replaces all entries, except if the global option 
+  By default, it replaces all entries, except if the global option
   is set to false.
   """
-  @spec replace(rope, str, str, list) :: rope
-  def replace(rope, pattern, replacement, opts // []) do
+  @spec replace(t, str, str, list) :: t
+  def replace(rope, pattern, replacement, opts \\ []) do
     global = Keyword.get(opts, :global, true)
 
     if global do
@@ -409,20 +447,19 @@ defmodule Rope do
   @doc """
   Converts the entire rope to a single binary.
   """
-  @spec to_string(rope) :: binary
+  @spec to_string(t) :: binary
   def to_string(rope) do
     rope
-    |> Stream.map(fn(rleaf(value: value)) -> value end)
+    |> Enum.map(fn(%Rleaf{value: value}) -> value end)
     |> Enum.join
   end
 
 
   defp ropeify(rope) do
     case rope do
-      rnode() -> rope
-      rleaf() -> rope
-      <<_ :: binary>> ->
-        Rope.new(rope)
+      %Rnode{} -> rope
+      %Rleaf{} -> rope
+      <<_ :: binary>> -> Rope.new(rope)
       nil -> nil
     end
   end
@@ -432,28 +469,27 @@ defmodule Rope do
   end
 
   defp do_concat(rope, nil, _opts) do
-    ropeify rope
+    ropeify(rope)
   end
 
   defp do_concat(nil, rope, _opts) do
-    ropeify rope
+    ropeify(rope)
   end
 
   defp do_concat(rope1, rope2, opts) do
     rebalance = Keyword.get(opts, :rebalance, true)
 
-    rope1 = ropeify rope1
-    rope2 = ropeify rope2
+    rope1 = ropeify(rope1)
+    rope2 = ropeify(rope2)
 
-    depth = rope1.depth
-    if rope2.depth > depth do
-      depth = rope2.depth
-    end
+    depth = max(rope2.depth, rope1.depth)
 
-    rope = rnode(depth: depth + 1,
-          left: rope1,
-          right: rope2,
-          length: rope1.length + rope2.length)
+    rope = %Rnode{
+      depth: depth + 1,
+      left: rope1,
+      right: rope2,
+      length: rope1.length + rope2.length
+    }
 
     if rebalance and (not Rope.balanced?(rope)) do
       Rope.rebalance(rope)
@@ -499,14 +535,17 @@ defmodule Rope do
     []
   end
 
-  defp partition_rope(offset, rleaf(length: len), termLength, _depth) do
+  defp partition_rope(offset, %Rleaf{length: len}, termLength, _depth) do
     [{offset, len + termLength}]
   end
 
-  defp partition_rope(offset, rnode(length: len, right: right, left: left), termLength, depth) do
-    if offset > termLength do
-      offset = offset - termLength
-    end
+  defp partition_rope(offset, %Rnode{length: len, right: right, left: left}, termLength, depth) do
+    offset =
+      if offset > termLength do
+        offset - termLength
+      else
+        offset
+      end
 
     cond do
       depth >= @partition_depth_limit ->
@@ -531,12 +570,12 @@ defmodule Rope do
     foundMatch = fn(findctxt(termIndex: i)) -> i == termLen end
 
     {_offset, possibles} = Enum.reduce(rope, { 0, []},
-      fn(rleaf(length: len, value: chunk), {offset, possibles}) ->
+      fn(%Rleaf{length: len, value: chunk}, {offset, possibles}) ->
         {offset + len, build_possible_matches(offset, chunk, term, possibles)}
       end
     )
 
-    match = possibles
+    possibles
       |> Enum.filter(foundMatch)
       |> Enum.map(fn(findctxt(findIndex: i)) -> i end)
       |> Enum.reverse
@@ -558,7 +597,7 @@ defmodule Rope do
 
     {offset, subropes} = Enum.reduce(indexes, {0, []}, fn(index, {offset, ropes}) ->
       len = index - offset
-      if offset != 0, do: len = len
+      # if offset != 0, do: len = len
 
       leftRope = slice(rope, offset, len)
       {index + termLen, [replacement | [leftRope | ropes]]}
@@ -567,8 +606,8 @@ defmodule Rope do
     leftRope = slice(rope, offset, rope.length)
     subropes = [leftRope | subropes]
 
-    subropes = Enum.reverse subropes
-    rebuild_rope [], subropes
+    subropes = Enum.reverse(subropes)
+    rebuild_rope([], subropes)
   end
 
   defp do_reduce_while(enumerable, acc, whiler, reducer) do
@@ -586,7 +625,7 @@ defmodule Rope do
   end
 
   defp rebuild_rope(subropes, [leaf1, leaf2 | leaves]) do
-    subrope = Rope.concat([leaf1, leaf2])
+    subrope = Rope.concat([leaf1, leaf2], rebalance: false)
     rebuild_rope([subrope | subropes], leaves)
   end
 
@@ -620,7 +659,7 @@ defmodule Rope do
   end
 
 
-  defimpl String.Chars, for: Rope do
+  defimpl String.Chars do
     @doc """
     Converts the entire rope to a single binary string.
     """
@@ -630,7 +669,7 @@ defmodule Rope do
   end
 
 
-  defimpl Enumerable, for: Rope do
+  defimpl Enumerable, for: Rope.Rleaf do
     @moduledoc """
     A convenience implementation that enumerates over the leaves of the rope but none
     of the parent/concatenation nodes.
@@ -642,76 +681,60 @@ defmodule Rope do
     A count of the leaf nodes in the rope. This current traverses the rope to count them.
     """
     def count(rope) do
-      Rope.reduce_leaves(rope, 0, fn(_leaf, acc) -> acc + 1 end)
+      {:ok, reduce(rope, 0, fn(_leaf, acc) -> acc + 1 end)}
     end
 
     @doc """
     Searches the ropes leaves in order for a match.
     """
     def member?(rope, value) do
-      try do
-        Rope.reduce_leaves(rope, false,
-          fn(leaf, false) ->
-            if leaf == value do
-              #yeah yeah, it's an error for control flow
-              throw :found
-            end
-            false
-          end)
-      catch
-        :throw, :found -> true
-      end
+      {:ok, Enum.any?(rope, fn (leaf) -> leaf.value == value end)}
     end
 
     @doc """
     Reduces over the leaf nodes.
     """
-    def reduce(rope, acc, fun) do
-      Rope.reduce_leaves(rope, acc, fun)
+    def reduce(_,       {:halt, acc}, _fun),   do: {:halted, acc}
+    def reduce(rope,    {:suspend, acc}, fun), do: {:suspended, acc, &reduce(rope, &1, fun)}
+    # def reduce([],      {:cont, acc}, _fun),   do: {:done, acc}
+    # def reduce([h | t], {:cont, acc}, fun),    do: reduce(t, fun.(h, acc), fun)
+
+    def reduce(%Rnode{right: right, left: left}, {:cont, acc}, fun) do
+      acc = reduce(left, acc, fun)
+      reduce(right, acc, fun)
+    end
+
+    def reduce(%Rnode{right: right, left: left}, acc, fun) do
+      acc = reduce(left, acc, fun)
+      reduce(right, acc, fun)
+    end
+
+    def reduce(%Rleaf{} = leaf, {:cont, acc}, fun) do
+      fun.(leaf, acc)
+    end
+
+    def reduce(%Rleaf{} = leaf, acc, fun) do
+      fun.(leaf, acc)
     end
   end
 
-  @doc false
-  def reduce_leaves(rnode(right: right, left: left), acc, fun) do
-      acc = reduce_leaves(left, acc, fun)
-      reduce_leaves(right, acc, fun)
+  defimpl Enumerable, for: Rope.Rnode do
+    defdelegate reduce(rope, acc, fun), to: Enumerable.Rope.Rleaf
+    defdelegate count(rope), to: Enumerable.Rope.Rleaf
+    defdelegate member?(rope, value), to: Enumerable.Rope.Rleaf
   end
 
-  def reduce_leaves(rleaf() = leaf, acc, fun) do
-    fun.(leaf, acc)
-  end
+  # defimpl Inspect, for: Rope.Rleaf do
+  #   @doc """
+  #   Traveres the leaf nodes and converts the chunks of binary data into a single
+  #   algebra document. Will convert '\n' characters into algebra document line breaks.
+  #   """
+  #   def inspect(rope, _opts) do
+  #     Apex.Format.format(rope, [])
+  #   end
+  # end
 
-  def reduce_leaves(nil, acc, _fun) do
-    acc
-  end
-
-
-  defimpl Inspect, for: Rope do
-    @doc """
-    Traveres the leaf nodes and converts the chunks of binary data into a single
-    algebra document. Will convert '\n' characters into algebra document line breaks.
-    """
-    def inspect(rope, _opts) do
-      Rope.to_algebra_doc(rope)
-    end
-  end
-
-  @doc false
-  def to_algebra_doc(rnode(left: nil, right: right)) do
-    to_algebra_doc(right)
-  end
-
-  def to_algebra_doc(rnode(left: left, right: nil)) do
-    to_algebra_doc(left)
-  end
-
-  def to_algebra_doc(rnode(left: left, right: right)) do
-    Inspect.Algebra.concat to_algebra_doc(left), to_algebra_doc(right)
-  end
-
-  def to_algebra_doc(rleaf(value: value)) do
-    [h|tail] = String.split(value, "\n")
-    Enum.reduce(tail, h, fn(next, last) -> Inspect.Algebra.line(last, next) end)
-  end
-
+  # defimpl Inspect, for: Rope.Rnode do
+  #   defdelegate inspect(rope, opts), to: Inspect.Rope.Rleaf
+  # end
 end
